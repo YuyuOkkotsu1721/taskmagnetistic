@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task for Venture</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
+
+
+    <link rel="stylesheet" href="task.css">
+    <style>
+        #modal {
+            z-index: 1000;
+        }
+
+        #myalertModal {
+            z-index: 3000;
+            /* Set a higher z-index value than the edit modal */
+        }
+
+        .logindropdownmenu {
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-right: 50px;
+        }
+
+        .kebab-menu {
+            cursor: pointer;
+            position: relative;
+            /* For absolute positioning of the dropdown */
+
+            margin-left: auto;
+        }
+
+        .kebab-menu svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 220px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #574e4e;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            z-index: 1;
+            right: 0;
+            /* Aligns the dropdown to the right */
+            color: white;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+            color: white;
+        }
+
+        .kebab-icon {
+            width: 35px;
+            /* Adjust width as needed */
+            height: 35px;
+            /* Adjust height as needed */
+            filter: invert(100%);
+        }
+
+        .textmenu {
+            color: white;
+        }
+
+        #modal {
+            z-index: 1000;
+
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800">
+
+    <div class="container mx-auto mt-8">
+
+
+        <div class="flex items-center justify-between mb-2">
+            <h1 id="ventureTitle" class="text-6xl font-bold text-white"></h1>
+
+            <!-- Container that triggers the dropdown -->
+            <div class="relative flex items-center group hover:bg-gray-700 rounded-lg px-3 py-3"
+                data-dropdown-toggle="dropdownMenu" data-dropdown-placement="bottom-end">
+                <div id="UserFullName" class="text-lg text-white font-bold mr-5">
+                    Full Name
+                </div>
+                <div class="w-20 h-20 bg-gray-500 rounded-full flex justify-end">
+                    <img id="profileImage" class="w-full h-full rounded-full object-contain cursor-pointer" src=""
+                        alt="Profile Picture">
+                </div>
+            </div>
+
+            <!-- Dropdown menu -->
+            <div id="dropdownMenu"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                    <li>
+                        <a href="editprofile.html"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
+                    </li>
+                    <li>
+                        <a href="log/logout.php"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div id="taskcompletionIndicator" class="text-2xl font-bold text-green-500 mr-5 ml-1"></div>
+
+
+
+
+
+        <!-- Rectangular box with plus symbol -->
+        <div class="mx-auto mt-8 w-24 h-24 mb-8 flex items-center justify-center border border-white rounded-md cursor-pointer"
+            onclick="openModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                </path>
+            </svg>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden text-white " id="modal">
+            <div
+                class="absolute top-1/2 left-1/2 w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-8 rounded-lg max-h-screen overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-4">Task Settings</h2>
+                <div class="mb-4">
+                    <label class="block mb-2">Task Title</label>
+                    <input type="text" id="taskTitle"
+                        class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Task Description</label>
+                    <textarea id="taskDescription"
+                        class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-2">Due Date</label>
+                    <input type="datetime-local" id="dueDate"
+                        class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+
+
+
+                <div class="mb-4">
+                    <label class="block mb-2">Priority Level</label>
+                    <select id="priorityLevel"
+                        class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Task Background Color</label>
+                    <input type="color" id="bgColor"
+                        class="bg-gray-800 text-white w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Task Text Color</label>
+                    <input type="color" id="textColor"
+                        class="bg-gray-800 text-white  w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+
+
+                <div class="flex justify-end">
+                    <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-2" id="closeModal"
+                        onclick="closeModal()">Cancel</button>
+                    <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" id="saveChanges">Save
+                        Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-8 container mx-auto relative text-white">
+        <div id="taskstatusbtns" class="flex justify-start items-center space-x-4 relative">
+            <button id="btnall" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-bold text-2xl"
+                onclick="filterTasks('All')">All</button>
+            <button id="btninactive"
+                class="px-4 py-2 bg-yellow-900 text-white rounded hover:bg-yellow-600 font-bold text-2xl"
+                onclick="filterTasks('Inactive')">Inactive</button>
+            <button id="btnactive" class="px-4 py-2 bg-red-900 text-white rounded hover:bg-red-600 font-bold text-2xl"
+                onclick="filterTasks('Active')">Active</button>
+            <button id="btncompleted"
+                class="px-4 py-2 bg-green-900 text-white rounded hover:bg-green-600 font-bold text-2xl"
+                onclick="filterTasks('Completed')">Completed</button>
+        </div>
+
+
+        <div id="taskfilterbtns" class="relative text-white">
+            <span class="mr-6 font-bold text-lg">Sort By:</span>
+            <select id="sortBy"
+                class="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                onchange="sortByDate(this.value)">
+                <option value="" disabled selected class="text-center">- Select -</option>
+                <option value="asc">Earliest to Latest</option>
+                <option value="desc">Latest to Earliest</option>
+                <option value="highToLow">High to Low</option>
+                <option value="lowToHigh">Low to High</option>
+            </select>
+        </div>
+    </div>
+
+
+
+    <div id="myalertModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white rounded shadow-md w-1/2">
+            <div class="flex items-center justify-between ">
+                <div class="font-bold text-xl text-purple-700 p-2 ml-1  ">Alert</div>
+                <button id="closealertModal"
+                    class=" text-3xl text-purple-700 hover:text-purple-900 p-2 mr-2">&times;</button>
+            </div>
+            <div class="border-t border-gray-300 mb-1 w-full "></div>
+            <p id="alertText" class="p-3 text-black"></p>
+            <div class="border-t border-gray-300 mt-1 w-full"></div>
+            <div class="flex justify-end p-3">
+                <button id="closealertModalButton"
+                    class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task List Section -->
+    <section class="mt-8 mb-8">
+        <div id="taskList" class="grid grid-cols-1 gap-4"></div>
+    </section>
+
+    <!-- Back button -->
+    <button onclick="goBack()"
+        class="fixed bottom-8 left-8 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+        <div class="transform text-white text-2xl rotate-180 inline-block">➤</div>
+    </button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+
+        function openAlertModal(message) {
+            document.getElementById("alertText").textContent = message;
+            document.getElementById("myalertModal").classList.remove("hidden");
+        }
+
+        document.getElementById("closealertModal").addEventListener("click", function () {
+            document.getElementById("myalertModal").classList.add("hidden");
+        });
+
+        document.getElementById("closealertModalButton").addEventListener("click", function () {
+            document.getElementById("myalertModal").classList.add("hidden");
+        });
+
+        // Get today's date in the format YYYY-MM-DDTHH:mm
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        var day = String(today.getDate()).padStart(2, '0');
+        var hours = String(today.getHours()).padStart(2, '0');
+        var minutes = String(today.getMinutes()).padStart(2, '0');
+
+        // Format the date string correctly
+        var formattedToday = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+        // Set the min attribute of the input to today's date
+        document.getElementById('dueDate').setAttribute('min', formattedToday);
+
+
+
+
+
+        function fetchCurrentUser() {
+            $.get("log/fetchCurrentUsername.php", function (data) {
+                // Parse the JSON response
+                var userData = JSON.parse(data);
+
+                // Check for errors
+                if (userData.hasOwnProperty('error')) {
+                    console.error(userData.error);
+                    return; // Exit the function if there's an error
+                }
+
+                // Update the user's full name
+                document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
+
+                // Check if the profile image is set or not, use default if not
+                if (userData.profileImage && userData.profileImage.trim() !== "") {
+                    document.getElementById('profileImage').src = userData.profileImage;
+                } else {
+                    document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
+                }
+            });
+        }
+
+        // Call the function when the window loads
+        window.onload = function () {
+            fetchCurrentUser();
+        };
+
+
+        var currentStatusFilter = 'All'; // Initialize status filter variable
+
+        function filterTasks(status) {
+            currentStatusFilter = status; // Update current status filter
+
+            var ventureID = getQueryParam('id'); // Retrieve ventureID dynamically from URL parameters
+
+            // Apply styling based on the clicked button
+            switch (status) {
+                case 'Inactive':
+                    $('#btninactive').removeClass('bg-yellow-900').addClass('bg-yellow-500');
+                    $('#btnall').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#btnactive').removeClass('bg-red-500').addClass('bg-red-900');
+                    $('#btncompleted').removeClass('bg-green-500').addClass('bg-green-900');
+                    break;
+                case 'Active':
+                    $('#btnactive').removeClass('bg-red-900').addClass('bg-red-500');
+                    $('#btncompleted').removeClass('bg-green-500').addClass('bg-green-900');
+                    $('#btnall').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#btninactive').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    break;
+                case 'Completed':
+                    $('#btncompleted').removeClass('bg-green-900').addClass('bg-green-500');
+                    $('#btnall').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#btninactive').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    $('#btnactive').removeClass('bg-red-500').addClass('bg-red-900');
+                    break;
+                default: // 'All'
+                    $('#btnall').removeClass('bg-blue-900').addClass('bg-blue-500');
+                    $('#btninactive').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    $('#btnactive').removeClass('bg-red-500').addClass('bg-red-900');
+                    $('#btncompleted').removeClass('bg-green-500').addClass('bg-green-900');
+                    break;
+            }
+
+            // AJAX request to load tasks based on status filter
+            $.get("task/taskread.php?id=" + ventureID + "&status=" + status, function (data) {
+                $("#taskList").html(data); // Replace task list content with tasks filtered by status
+            });
+        }
+
+        function sortByDate(order) {
+            var ventureID = getQueryParam('id');
+            var status = currentStatusFilter; // Retrieve current status filter
+
+            // Modify AJAX request URL to include status filter
+            $.get("task/taskread.php?id=" + ventureID + "&order=" + order + "&status=" + status, function (data) {
+                $("#taskList").html(data);
+            });
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // Set default values for background color and text color
+            document.getElementById('bgColor').value = '#1434A4'; // Default background color: bg-blue-600
+            document.getElementById('textColor').value = '#FFFFFF'; // Default text color: white
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+        function redirectToSubtask(taskID, taskTitle) {
+            // Encode the task title for URL
+            var encodedTaskTitle = encodeURIComponent(taskTitle);
+            // Construct the URL with task title and task ID
+            var url = "subtask.html?taskid=" + taskID + "&tasktitle=" + encodedTaskTitle;
+            // Navigate to the new URL
+            window.location.href = url;
+        }
+
+
+
+        // Open Modal
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+
+        function closeModal() {
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('dueDate').value = '';
+            document.getElementById('priorityLevel').value = 'Low';
+
+            document.getElementById('modal').classList.add('hidden');
+        };
+
+        $(document).ready(function () {
+            // Retrieve ventureID dynamically from URL parameters
+            var ventureID = getQueryParam('id');
+
+            // AJAX request to load tasks
+            $.get("task/taskread.php?id=" + ventureID, function (data) {
+                $("#taskList").html(data);
+            });
+        });
+
+
+        function refreshTaskList() {
+            var ventureID = getQueryParam('id'); // Retrieve ventureID dynamically from URL parameters
+            // AJAX request to reload tasks
+            $.get("task/taskread.php?id=" + ventureID, function (data) {
+                $("#taskList").html(data); // Replace task list content with updated data
+            });
+        }
+
+        // Function to retrieve URL query parameters
+        function getQueryParam(param) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(param);
+        }
+        // Retrieve VentureTitle and VentureID from URL query parameters
+        const ventureTitle = getQueryParam('title');
+        const ventureID = getQueryParam('id');
+
+        // Update HTML content with retrieved values
+        document.getElementById('ventureTitle').textContent += ventureTitle;
+
+
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function filterTaskStatus(status) {
+            var taskItems = document.getElementsByClassName('task-item');
+
+            if (status === 'All') {
+                console.log("All tasks:");
+                Array.from(taskItems).forEach(function (task) {
+                    console.log(task.dataset.taskId);
+                });
+            } else if (status === 'Inactive') {
+                console.log("Inactive tasks:");
+                Array.from(taskItems).forEach(function (task) {
+                    var completedSubtasks = parseInt(task.dataset.completedSubtasks);
+                    if (completedSubtasks === 0) {
+                        console.log(task.dataset.taskId);
+                    }
+                });
+            } else if (status === 'Active') {
+                console.log("Active tasks:");
+                Array.from(taskItems).forEach(function (task) {
+                    var completedSubtasks = parseInt(task.dataset.completedSubtasks);
+                    var totalSubtasks = parseInt(task.dataset.totalSubtasks);
+                    if (completedSubtasks > 0 && completedSubtasks < totalSubtasks) {
+                        console.log(task.dataset.taskId);
+                    }
+                });
+            } else if (status === 'Completed') {
+                console.log("Completed tasks:");
+                Array.from(taskItems).forEach(function (task) {
+                    var completedSubtasks = parseInt(task.dataset.completedSubtasks);
+                    var totalSubtasks = parseInt(task.dataset.totalSubtasks);
+                    if (completedSubtasks === totalSubtasks && totalSubtasks > 0) {
+                        console.log(task.dataset.taskId);
+                    }
+                });
+            }
+        }
+
+        document.getElementById('saveChanges').addEventListener('click', sendTaskData);
+
+        function sendTaskData() {
+            // Collect input values from the modal
+            var taskTitle = document.getElementById('taskTitle').value;
+            var taskDescription = document.getElementById('taskDescription').value;
+            var dueDate = new Date(document.getElementById('dueDate').value).toLocaleString();
+            var priorityLevel = document.getElementById('priorityLevel').value;
+            var bgColor = document.getElementById('bgColor').value;
+            var textColor = document.getElementById('textColor').value;
+            var ventureID = getQueryParam('id');
+
+            // Check if all required fields are filled
+            if (taskTitle && taskDescription && priorityLevel && dueDate && ventureID && bgColor && textColor) {
+                // Send an AJAX request to insert task data
+                $.post("task/taskinsert.php", {
+                    taskTitle: taskTitle,
+                    taskDescription: taskDescription,
+                    priorityLevel: priorityLevel,
+                    dueDate: dueDate,
+                    ventureID: ventureID,
+                    bgColor: bgColor,
+                    textColor: textColor
+                }, function (data, status) {
+                    console.log('Data Inserted Successfully:', status);
+                    refreshTaskList();
+                });
+            } else {
+                openAlertModal("All fields including the colors are required");
+
+            }
+
+            // Close the modal and clear the inputs
+            closeModal();
+        }
+
+
+        function toggleMenu() {
+            var dropdown = document.getElementById("dropdown");
+            dropdown.classList.toggle("active");
+        }
+
+        function logout() {
+            window.location.href = "login.html";
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve VentureID from URL parameter
+            const ventureID = getQueryParam('id');
+
+            // AJAX request to fetch completion indicator
+            $.get("task/taskcompletion.php?ventureid=" + ventureID, function (completionIndicator) {
+                console.log("Completion Indicator:", completionIndicator);
+                document.getElementById('taskcompletionIndicator').textContent = completionIndicator;
+            });
+        });
+
+    </script>
+
+
+</body>
+
+</html>

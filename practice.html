@@ -1,0 +1,30 @@
+
+
+<input type="datetime-local" id="dueDate" min="" />
+<script>
+
+
+
+    // Get the current date and time in the format required by datetime-local input
+    const editnow = new Date();
+    const edityear = editnow.getFullYear();
+    const editmonth = (editnow.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const editday = editnow.getDate().toString().padStart(2, '0');
+    const edithours = editnow.getHours().toString().padStart(2, '0');
+    const editminutes = editnow.getMinutes().toString().padStart(2, '0');
+
+    // Set the min attribute to the current date and time
+    document.getElementById('editDueDate').min = `${edityear}-${editmonth}-${editday}T${edithours}:${editminutes}`;
+
+
+
+
+
+
+
+</script>
+
+
+
+
+

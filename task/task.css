@@ -1,0 +1,38 @@
+
+input:hover {
+    background-color: rgba(66, 55, 55, 0.346);
+    transition: background-color 0.3s ease;
+}
+
+
+
+        /* Additional custom styles */
+        @media (max-width: 640px) {
+
+            /* Adjustments for smaller screens */
+            .max-w-4xl {
+                max-width: 100%;
+            }
+
+            .absolute.bottom-0.right-0,
+            .absolute.bottom-0.left-0 {
+                position: static;
+                margin-top: 1rem;
+                margin-right: 0;
+                margin-left: 0;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .absolute.bottom-0.right-0 button,
+            .absolute.bottom-0.left-0 button {
+                margin: 0.5rem;
+            }
+
+            /* Ensure menu icon is on the upper right */
+            .absolute.top-0.right-0 {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        .bg-tint-black {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+    </style>
+</head>
+
+<body class="bg-blue-900 flex h-screen">
+    <div class="w-full flex justify-center items-center">
+        <div class="w-full max-w-md bg-white p-4 rounded shadow-md"> <!-- Reduced padding -->
+            <h1 class="text-2xl font-semibold mb-2">Sign Up</h1> <!-- Reduced margin -->
+
+            <div class="flex justify-center items-center mb-2">
+                <div class="w-28 h-28 bg-gray-500 rounded-full flex justify-center items-center" id="profilePicture">
+                    <img id="profileImage" class="w-full h-full rounded-full object-contain cursor-pointer"
+                        src="profilepics/defaultphotobytaskmagnet.jpg" alt="" onclick="openImageModal(this.src)">
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div id="imageModal"
+                class="fixed top-0 left-0 z-50 w-full h-full flex justify-center items-center bg-black bg-opacity-50 hidden text-white">
+                <div class="bg-white rounded-lg overflow-hidden relative max-w-screen-md max-h-screen-md"
+                    style="max-height: 95vh;">
+                    <img id="modalImage" src="" alt="Modal Image" class="w-full h-full object-contain" />
+                </div>
+                <button onclick="closeImageModal()"
+                    class="absolute top-0 right-0 p-3 rounded-full text-white">&#10005;</button>
+            </div>
+
+            <div class="mt-1">
+                <label for="editImage" class="block text-sm font-medium text-gray-700">Upload Profile Picture:</label>
+                <input type="file" id="editImage" name="editImage" accept="image/*" onchange="previewProfileImage();"
+                    class="mt-1 mb-2 bg-gray-300 text-black w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+
+            <!-- Reduced margin for input fields -->
+            <div class="mt-1">
+                <label for="firstname" class="block text-sm font-medium text-gray-700">First Name:</label>
+                <input type="text" id="firstname"
+                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                <span id="firstnameGuidance" class="text-sm text-gray-500">Letters only</span>
+                <!-- Span for first name guidance -->
+            </div>
+            <div class="mt-1">
+                <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name:</label>
+                <input type="text" id="lastname"
+                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                <span id="lastnameGuidance" class="text-sm text-gray-500">Letters only</span>
+                <!-- Span for last name guidance -->
+            </div>
+
+            <div class="mt-1">
+                <label for="phonenumber" class="block text-sm font-medium text-gray-700">Phone Number:</label>
+                <input type="tel" id="phonenumber" maxlength="11"
+                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                <span id="phonenumberFeedback" class="text-sm text-red-500"></span>
+                <!-- Span for phone number validation feedback -->
+            </div>
+
+            <div class="mt-1">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+                <input type="email" id="email"
+                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                <span id="emailFeedback" class="text-sm text-red-500"></span>
+                <!-- Span for email validation feedback -->
+            </div>
+
+            <div class="mt-1">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username:</label>
+                <input type="text" id="username"
+                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                <span id="usernameAvailability" class="text-sm text-gray-500"></span>
+                <!-- Span for username availability -->
+            </div>
+
+            <!-- Reduced margin for password fields -->
+            <div class="mt-1">
+                <label for="newpassword" class="block text-sm font-medium text-gray-700">New Password:</label>
+                <div class="relative mt-1">
+                    <input type="password" id="newpassword"
+                        class="focus:ring-indigo-500 focus:border-indigo-500 pr-10 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                    <button type="button"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-700 focus:outline-none togglePassword">
+                        <img src="elements/eyepassword.svg" alt="Toggle Password Visibility" class="h-5 w-5">
+                    </button>
+                </div>
+                <span id="newpasswordFeedback" class="text-sm text-gray-500"></span>
+                <!-- Span for new password validation feedback -->
+            </div>
+
+
+            <!-- Reduced margin for password fields -->
+            <div class="mt-1 mb-5">
+                <label for="confirmnewpassword" class="block text-sm font-medium text-gray-700">Confirm New
+                    Password:</label>
+                <div class="relative mt-1">
+                    <input type="password" id="confirmnewpassword"
+                        class="focus:ring-indigo-500 focus:border-indigo-500 pr-10 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md px-3 py-1">
+                    <button type="button"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-700 focus:outline-none togglePassword">
+                        <img src="elements/eyepassword.svg" alt="Toggle Password Visibility" class="h-5 w-5">
+                    </button>
+                </div>
+                <span id="confirmnewpasswordFeedback" class="text-sm text-gray-500"></span>
+                <!-- Span for confirm new password validation feedback -->
+            </div>
+
+            <div class="mt-2 flex justify-end"> <!-- Adjusted margin -->
+                <button id="saveButton"
+                    class="w-1/3 bg-yellow-500 text-white py-2 rounded-md font-semibold cursor-not-allowed "
+                    disabled>Create Account</button> <!-- Adjusted width -->
+            </div>
+
+
+        </div>
+    </div>
+    <!-- Back button -->
+    <button onclick="goBack()"
+        class="fixed bottom-8 left-8 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+        <div class="transform text-white text-2xl rotate-180 inline-block">➤</div>
+    </button>
+
+    <script>
+
+        let validfirstname = false;
+        let validlastname = false;
+        let validemail = false;
+        let validusername = false;
+        let validphone = false;
+        let validpassword = false;
+
+        // Function to update the status of the Save button based on the validity of input fields
+        function updateSaveButtonStatus() {
+            const saveButton = document.getElementById('saveButton');
+            if (validfirstname && validlastname && validemail && validusername && validphone && validpassword) {
+                saveButton.classList.remove('cursor-not-allowed', 'bg-yellow-500');
+                saveButton.classList.add('bg-blue-500', 'cursor-pointer');
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('bg-blue-500', 'cursor-pointer');
+                saveButton.classList.add('cursor-not-allowed', 'bg-yellow-500');
+                saveButton.disabled = true;
+            }
+        }
+
+        // Call the function to update the Save button status initially
+        updateSaveButtonStatus();
+
+        function previewProfileImage() {
+            const file = document.getElementById('editImage').files[0];
+            const preview = document.getElementById('profileImage');
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result; // Update the profile image src
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to check if the new password meets complexity requirements
+        function checkPasswordComplexity(newPassword) {
+            // Regular expressions to check for password complexity requirements
+            var lowercaseRegex = /[a-z]/;
+            var uppercaseRegex = /[A-Z]/;
+            var specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+            var numberRegex = /[0-9]/;
+
+            // Check if the new password meets the complexity requirements
+            var containsLowercase = lowercaseRegex.test(newPassword);
+            var containsUppercase = uppercaseRegex.test(newPassword);
+            var containsSpecialChar = specialCharRegex.test(newPassword);
+            var containsNumber = numberRegex.test(newPassword);
+
+            // Return true if all complexity requirements are met, false otherwise
+            return containsLowercase && containsUppercase && containsSpecialChar && containsNumber;
+        }
+
+        // Event listener for new password input
+        document.getElementById('newpassword').addEventListener('input', function () {
+            var newPasswordInput = this.value;
+            var newPasswordFeedback = document.getElementById('newpasswordFeedback');
+            var confirmNewPasswordInput = document.getElementById('confirmnewpassword');
+            var confirmNewPasswordFeedback = document.getElementById('confirmnewpasswordFeedback');
+
+            // Check password complexity
+            if (!checkPasswordComplexity(newPasswordInput)) {
+                newPasswordFeedback.textContent = 'Password must contain at least one lowercase letter, one uppercase letter, one special character, and one number.';
+                confirmNewPasswordInput.style.display = 'none'; // Hide confirm password field if new password doesn't meet complexity
+            } else {
+                newPasswordFeedback.textContent = 'Password meets complexity requirements.';
+                confirmNewPasswordInput.style.display = 'block'; // Show confirm password field if new password meets complexity
+            }
+
+            // Clear confirm password field and feedback when new password changes
+            confirmNewPasswordInput.value = '';
+            confirmNewPasswordFeedback.textContent = '';
+        });
+
+        // Event listener for confirm new password input
+        document.getElementById('confirmnewpassword').addEventListener('input', function () {
+            var newPasswordInput = document.getElementById('newpassword').value;
+            var confirmNewPasswordInput = this.value;
+            var confirmNewPasswordFeedback = document.getElementById('confirmnewpasswordFeedback');
+
+            // Check if confirm password matches new password
+            if (newPasswordInput !== confirmNewPasswordInput) {
+                confirmNewPasswordFeedback.textContent = 'Passwords do not match.';
+                validpassword = false;
+
+            } else {
+                confirmNewPasswordFeedback.textContent = 'Passwords match.';
+                validpassword = true;
+            }
+            updateSaveButtonStatus();
+        });
+
+        // Event listener for email input
+        document.getElementById('email').addEventListener('input', function () {
+            var emailInput = this.value;
+            var emailFeedback = document.getElementById('emailFeedback');
+
+            // Regular expression to validate email format (ending with @gmail.com or @yahoo.com)
+            var emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/;
+
+            // Check if the email input matches the required format
+            if (!emailRegex.test(emailInput)) {
+                emailFeedback.textContent = 'Please enter a valid email address (gmail.com or yahoo.com only)';
+                validemail = false;
+
+            } else {
+                emailFeedback.textContent = '';
+                validemail = true;
+            }
+            updateSaveButtonStatus();
+        });
+
+        // Event listener for phone number input
+        document.getElementById('phonenumber').addEventListener('input', function () {
+            var phoneNumberInput = this.value;
+            var phoneNumberFeedback = document.getElementById('phonenumberFeedback');
+
+            // Check if the phone number input contains non-numeric characters or exceeds 11 digits
+            if (!/^\d{0,11}$/.test(phoneNumberInput)) {
+                phoneNumberFeedback.textContent = 'Please enter a valid phone number (up to 11 digits)';
+                validphone = false;
+
+            } else {
+                phoneNumberFeedback.textContent = ''; // Clear the error message if input is valid
+                validphone = true;
+            }
+            updateSaveButtonStatus();
+        });
+
+        document.getElementById('firstname').addEventListener('input', function () {
+            var firstNameInput = this.value;
+            var firstNameGuidance = document.getElementById('firstnameGuidance');
+
+            // Check if non-letter or non-space characters are present in the first name
+            if (!/^[a-zA-Z\s]*$/.test(firstNameInput)) {
+                firstNameGuidance.textContent = 'Letters and spaces only';
+                validfirstname = false; // Update flag
+            } else {
+                firstNameGuidance.textContent = ''; // Clear the guidance message if input is valid
+                validfirstname = true; // Update flag
+            }
+            updateSaveButtonStatus(); // Update Save button status
+        });
+
+        // Event listener for last name input
+        document.getElementById('lastname').addEventListener('input', function () {
+            var lastNameInput = this.value;
+            var lastNameGuidance = document.getElementById('lastnameGuidance');
+
+            // Check if non-letter or non-space characters are present in the last name
+            if (!/^[a-zA-Z\s]*$/.test(lastNameInput)) {
+                lastNameGuidance.textContent = 'Letters and spaces only';
+                validlastname = false;
+
+            } else {
+                lastNameGuidance.textContent = ''; // Clear the guidance message if input is valid
+                validlastname = true;
+            }
+            updateSaveButtonStatus();
+        });
+
+        // Event listener for username input
+        document.getElementById('username').addEventListener('input', function () {
+            var usernameInput = this.value;
+            var usernameFeedback = document.getElementById('usernameAvailability');
+
+            // Check if the username input is empty
+            if (usernameInput.trim() === '') {
+                usernameFeedback.textContent = 'Please enter a username.';
+                updateSaveButtonStatus(); // Update button status
+                return; // Exit function early
+            }
+
+            // Send AJAX request to check the availability of the username
+            fetch('log/checkusername.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'username=' + encodeURIComponent(usernameInput)
+            })
+                .then(response => response.text())
+                .then(result => {
+                    if (result.trim() === 'exists') {
+                        usernameFeedback.textContent = 'Username already exists.';
+                        validusername = false;
+
+                    } else if (result.trim() === 'notexists') {
+                        usernameFeedback.textContent = 'Username available.';
+                        validusername = true;
+                    } else {
+                        usernameFeedback.textContent = 'Error checking username availability.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    usernameFeedback.textContent = 'Error checking username availability.';
+                });
+
+            updateSaveButtonStatus();
+        });
+
+
+
+
+
+
+        // Add event listener to toggle password visibility
+        const togglePasswordButtons = document.querySelectorAll('.togglePassword');
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                // Change button icon based on password visibility
+                this.querySelector('img').src = type === 'password' ? 'elements/eyepassword.svg' : 'elements/eyeopened.svg';
+            });
+        });
+
+        function saveUserData() {
+            const formData = new FormData();
+            const file = document.getElementById('editImage').files[0];
+            if (!file) {
+                alert('Please choose an image for your profile.');
+                return;
+            }
+            formData.append('editImage', file);
+            formData.append('UserFirstName', document.getElementById('firstname').value);
+            formData.append('UserLastName', document.getElementById('lastname').value);
+            formData.append('UserPhoneNumber', document.getElementById('phonenumber').value);
+            formData.append('UserEmail', document.getElementById('email').value);
+            formData.append('UserUsername', document.getElementById('username').value);
+            formData.append('Userpassword', document.getElementById('newpassword').value);
+
+            $.ajax({
+                url: 'signup/signup.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    window.location.href = 'index.html';
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.statusText);
+                }
+            });
+        }
+
+        document.getElementById('saveButton').addEventListener('click', function () {
+            saveUserData();
+        });
+
+
+
+
+        function openImageModal(imagePath) {
+            // Show modal
+            document.getElementById('imageModal').classList.remove('hidden');
+            // Set image source
+            document.getElementById('modalImage').src = imagePath;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+
+</body>
+
+</html>

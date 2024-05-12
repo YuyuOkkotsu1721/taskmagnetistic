@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task for Venture</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
+
+    <style>
+        #subtaskmodal {
+            z-index: 2000;
+        }
+
+        #modal {
+            z-index: 1000;
+        }
+
+        .logindropdownmenu {
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-right: 50px;
+        }
+
+        .kebab-menu {
+            cursor: pointer;
+            position: relative;
+            /* For absolute positioning of the dropdown */
+
+            margin-left: auto;
+        }
+
+        .kebab-menu svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 220px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #574e4e;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            z-index: 1;
+            right: 0;
+            /* Aligns the dropdown to the right */
+            color: white;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+            color: white;
+        }
+
+        .kebab-icon {
+            width: 35px;
+            /* Adjust width as needed */
+            height: 35px;
+            /* Adjust height as needed */
+            filter: invert(100%);
+        }
+
+        .textmenu {
+            color: white;
+        }
+
+        #modal {
+            z-index: 1000;
+
+        }
+
+        ;
+    </style>
+</head>
+
+<body class="bg-gray-900">
+    <div id="subtask-content" class="container mx-auto mt-8">
+        <!-- Task Title and Completion Indicator -->
+        <div class="flex items-center justify-between mb-4">
+            <h1 id="taskTitle" class="text-6xl font-bold "></h1>
+
+            <!-- Container that triggers the dropdown -->
+            <div class="relative flex items-center group hover:bg-gray-700 rounded-lg px-3 py-3"
+                data-dropdown-toggle="dropdownMenu" data-dropdown-placement="bottom-end">
+                <div id="UserFullName" class="text-lg  font-bold mr-5">
+                    Full Name
+                </div>
+                <div class="w-20 h-20 bg-gray-500 rounded-full flex justify-end">
+                    <img id="profileImage" class="w-full h-full rounded-full object-contain cursor-pointer" src=""
+                        alt="Profile Picture">
+                </div>
+            </div>
+
+            <!-- Dropdown menu -->
+            <div id="dropdownMenu"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                    <li>
+                        <a href="editprofile.html"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:">Profile</a>
+                    </li>
+                    <li>
+                        <a href="log/logout.php"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+        <div class="flex justify-between  mb-8">
+            <div id="timedata" class="flex flex-col">
+                <div id="timeRemaining" class="text-base font-semibold opacity-60">Time Remaining:</div>
+                <div id="timealloted" class="text-base font-semibold opacity-60">Total Allotted Time:</div>
+                <div id="timecompleted" class="text-base font-semibold opacity-60">Total Completed Time:</div>
+
+            </div>
+            <div id="completionIndicator" class="text-2xl font-bold text-green-500 mr-2"></div>
+
+        </div>
+
+
+
+
+
+
+        <!-- Rectangular box with plus symbol -->
+        <div class="mx-auto mt-8 w-24 mb-8 h-24 flex items-center justify-center border border-white rounded-md cursor-pointer"
+            onclick="opensubtaskModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 " fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                </path>
+            </svg>
+        </div>
+
+
+
+        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden text-white  overflow-y-auto" id="subtaskmodal">
+            <div
+                class="absolute top-1/2 left-1/2 w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-8 rounded-lg max-h-screen overflow-y-auto">
+                <h2 class="text-2xl text-white  font-bold mb-4">Subtask Settings</h2>
+                <div class="mb-4">
+                    <label class="text-white block mb-2">Subtask Title</label>
+                    <input type="text" id="subtaskTitle"
+                        class="bg-gray-800  px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div class="mb-4">
+                    <label class="text-white block mb-2">Subtask Description</label>
+                    <textarea id="subtaskDescription"
+                        class="text-white  bg-gray-800  h-48 px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500">N/A</textarea>
+                </div>
+
+                <div class="flex flex-row space-x-3 w-full ">
+
+                    <div class="mb-4 w-full">
+                        <label class="block mb-2">Duration (days)</label>
+                        <input type="number" id="subtaskDurationdays" min="0" value="0"
+                            class="bg-gray-800 w-full px-4 py-2  rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+
+                    <div class="mb-4 w-full">
+                        <label class="block mb-2">Duration (hours)</label>
+                        <input type="number" id="subtaskDurationhours" min="0" value="0"
+                            class="bg-gray-800 w-full px-4 py-2  rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+
+                    <div class="mb-4  w-full">
+                        <label class="block mb-2">Duration (mins)</label>
+                        <input type="number" id="subtaskDuration" min="0" value="30"
+                            class="bg-gray-800 w-full px-4 py-2  rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+
+                </div>
+
+
+                <div class="mb-4">
+                    <label class="block mb-2">Difficulty Level</label>
+                    <select id="subtaskDifficulty"
+                        class="bg-gray-800  px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="Easy" selected>Easy</option>
+                        <option value="Average">Average</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Subtask Background Color</label>
+                    <input type="color" id="bgColor"
+                        class="bg-gray-800  w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Subtask Text Color</label>
+                    <input type="color" id="textColor"
+                        class="bg-gray-800   w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+
+                <div class="flex justify-end">
+                    <button class="px-4 py-2 bg-red-500  rounded hover:bg-red-600 mr-2" id="closesubtaskModal"
+                        onclick="closesubtaskModal()">Cancel</button>
+                    <button class="px-4 py-2 bg-green-500  rounded hover:bg-green-600" id="subtasksaveChanges">Create
+                        Subtask</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-8 container mx-auto relative ">
+
+            <div id="subtaskstatusbtns" class="flex justify-start items-center space-x-4 relative">
+                <button id="allBtn"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-bold text-2xl"
+                    onclick="filterSubtasks('All')">All</button>
+                <button id="pendingBtn"
+                    class="px-4 py-2 bg-yellow-900 text-white rounded hover:bg-yellow-600 font-bold text-2xl"
+                    onclick="filterSubtasks('Pending')">Pending</button>
+                <button id="ongoingBtn"
+                    class="px-4 py-2 bg-red-900 text-white rounded hover:bg-red-600 font-bold text-2xl"
+                    onclick="filterSubtasks('Ongoing')">Ongoing</button>
+                <button id="doneBtn"
+                    class="px-4 py-2 bg-green-900 text-white rounded hover:bg-green-600 font-bold text-2xl"
+                    onclick="filterSubtasks('Done')">Done</button>
+            </div>
+
+
+            <div id="subtaskfilterbtns" class="relative">
+                <span class="mr-6 font-bold text-lg">Sort By:</span>
+                <select id="sortBy"
+                    class="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                    onchange="sortByDate(this.value)">
+                    <option value="" disabled selected class="text-center">- Select -</option>
+                    <option value="shortest">Shortest to Longest</option>
+                    <option value="longest">Longest to Shortest</option>
+                    <option value="easy">Easy to Hard</option>
+                    <option value="hard">Hard to Easy</option>
+                    <option value="markedfirst">Marked First</option>
+                    <option class="hidden"  value="statusasc">Pending to Done</option>
+                    <option class="hidden"  value="statusdesc">Done to Pending</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <section class="mt-8 mb-8">
+            <div id="subtaskList" class="grid grid-cols-1 gap-4"></div>
+
+        </section>
+
+
+        <!-- Back button -->
+        <button onclick="goBack()" class="fixed bottom-8 left-8 bg-gray-500 hover:bg-gray-600  py-2 px-4 rounded">
+            <div class="transform text-white text-2xl rotate-180 inline-block">➤</div>
+        </button>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+
+
+
+
+
+        function fetchCurrentUser() {
+            $.get("log/fetchCurrentUsername.php", function (data) {
+                // Parse the JSON response
+                var userData = JSON.parse(data);
+
+                // Check for errors
+                if (userData.hasOwnProperty('error')) {
+                    console.error(userData.error);
+                    return; // Exit the function if there's an error
+                }
+
+                // Update the user's full name
+                document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
+
+                // Check if the profile image is set or not, use default if not
+                if (userData.profileImage && userData.profileImage.trim() !== "") {
+                    document.getElementById('profileImage').src = userData.profileImage;
+                } else {
+                    document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
+                }
+            });
+        }
+
+        // Call the function when the window loads
+        window.onload = function () {
+            fetchCurrentUser();
+        };
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default background color and text color values
+            document.getElementById('bgColor').value = '#2D3748'; // Default background color: bg-gray-800
+            document.getElementById('textColor').value = '#FFFFFF'; // Default text color: white
+
+        });
+
+        function filterSubtasks(status) {
+            var taskID = getQueryParam('taskid'); // Retrieve task ID dynamically from URL parameters
+
+
+            // Apply styling based on the clicked button
+            switch (status) {
+                case 'Pending':
+                    $('#pendingBtn').removeClass('bg-yellow-900').addClass('bg-yellow-500');
+                    $('#allBtn').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#ongoingBtn').removeClass('bg-red-500').addClass('bg-red-900');
+                    $('#doneBtn').removeClass('bg-green-500').addClass('bg-green-900');
+                    break;
+                case 'Ongoing':
+                    $('#ongoingBtn').removeClass('bg-red-900').addClass('bg-red-500');
+                    $('#doneBtn').removeClass('bg-green-500').addClass('bg-green-900');
+                    $('#allBtn').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#pendingBtn').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    break;
+                case 'Done':
+                    $('#doneBtn').removeClass('bg-green-900').addClass('bg-green-500');
+                    $('#allBtn').removeClass('bg-blue-500').addClass('bg-blue-900');
+                    $('#pendingBtn').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    $('#ongoingBtn').removeClass('bg-red-500').addClass('bg-red-900');
+                    break;
+                default: // 'All'
+                    $('#allBtn').removeClass('bg-blue-900').addClass('bg-blue-500');
+                    $('#pendingBtn').removeClass('bg-yellow-500').addClass('bg-yellow-900');
+                    $('#ongoingBtn').removeClass('bg-red-500').addClass('bg-red-900');
+                    $('#doneBtn').removeClass('bg-green-500').addClass('bg-green-900');
+                    break;
+            }
+
+
+            // AJAX request to load subtasks based on status
+            if (status === 'All') {
+                $.get("subtask/subtaskread.php?taskid=" + taskID, function (data) {
+                    $("#subtaskList").html(data); // Replace subtask list content with all subtasks
+                });
+            } else {
+                $.get("subtask/subtaskread.php?taskid=" + taskID + "&status=" + status, function (data) {
+                    $("#subtaskList").html(data); // Replace subtask list content with filtered subtasks
+                });
+            }
+        }
+
+        function sortByDate(sortOption) {
+            var taskID = getQueryParam('taskid'); // Retrieve task ID dynamically from URL parameters
+            var statusFilter = getStatusFilter(); // Get the current status filter
+
+            // Adjust the logic to ensure 'All' status is handled correctly
+            if (statusFilter === 'All') {
+                statusFilter = ''; // Ensure no status filter is applied when sorting
+            }
+
+            // AJAX request to load subtasks based on sorting option and status filter
+            $.get("subtask/subtaskread.php?taskid=" + taskID + "&status=" + statusFilter + "&sortBy=" + sortOption, function (data) {
+                $("#subtaskList").html(data); // Replace subtask list content with sorted subtasks
+            });
+        }
+
+
+        $(document).ready(function () {
+            callsubtasktime();
+            var taskID = getQueryParam('taskid');
+
+            // AJAX request to load subtasks
+            $.get("subtask/subtaskread.php?taskid=" + taskID, function (data) {
+                $("#subtaskList").html(data);
+            });
+
+            // Listen for the custom event with detailed data
+            document.addEventListener('logUpdatedInputsTriggered', function (event) {
+                var formData = event.detail.formData;
+                console.log('FormData:', formData);
+
+                // Perform AJAX post with the FormData
+                $.ajax({
+                    url: "subtask/subtaskedit.php",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data, status) {
+                        console.log("Data: " + data + "\nStatus: " + status);
+                        closeEditModal(); // Close the modal after updating
+
+                        // AJAX request to load subtasks
+                        $.get("subtask/subtaskread.php?taskid=" + taskID, function (data) {
+                            $("#subtaskList").html(data);
+                        });
+
+                        // Reload the page if status is being updated to "Ongoing" or "Done"
+                        if (formData.get('status') === "Ongoing" || formData.get('status') === "Done") {
+                            location.reload(); // Reload the page
+                        }
+                    }
+                });
+            });
+        });
+
+
+
+        function getStatusFilter() {
+            // Determine the current status filter button's ID
+            var statusButtons = ['allBtn', 'pendingBtn', 'ongoingBtn', 'doneBtn'];
+            for (var i = 0; i < statusButtons.length; i++) {
+                if ($('#' + statusButtons[i]).hasClass('bg-blue-500') ||
+                    $('#' + statusButtons[i]).hasClass('bg-yellow-500') ||
+                    $('#' + statusButtons[i]).hasClass('bg-red-500') ||
+                    $('#' + statusButtons[i]).hasClass('bg-green-500')) {
+                    return $('#' + statusButtons[i]).text(); // Return the text of the active status button
+                }
+            }
+            return 'All'; // Default to 'All' if no status button is active
+        }
+
+
+
+        function goBack() {
+            window.history.back();
+        }
+        document.getElementById('subtasksaveChanges').addEventListener('click', function () {
+            // Get the input values from the modal
+            var subtaskTitle = document.getElementById('subtaskTitle').value;
+            var subtaskDescription = document.getElementById('subtaskDescription').value;
+            var subtaskDurationDays = parseInt(document.getElementById('subtaskDurationdays').value) || 0;
+            var subtaskDurationHours = parseInt(document.getElementById('subtaskDurationhours').value) || 0;
+            var subtaskDurationMinutes = parseInt(document.getElementById('subtaskDuration').value) || 0;
+            var subtaskDuration = (subtaskDurationDays * 24 * 60) + (subtaskDurationHours * 60) + subtaskDurationMinutes;
+            var subtaskDifficulty = document.getElementById('subtaskDifficulty').value;
+            var bgColor = document.getElementById('bgColor').value;
+            var textColor = document.getElementById('textColor').value;
+            var taskid = getQueryParam('taskid');
+
+            // Log inputs to console
+            console.log("Subtask Title:", subtaskTitle);
+            console.log("Subtask Description:", subtaskDescription);
+            console.log("Subtask Duration (minutes):", subtaskDuration);
+            console.log("Subtask Difficulty:", subtaskDifficulty);
+            console.log("Background Color:", bgColor);
+            console.log("Text Color:", textColor);
+            console.log("Task ID:", taskid);
+
+            // Send an AJAX request to insert subtask
+            $.post("subtask/subtaskinsert.php", {
+                subtaskTitle: subtaskTitle,
+                subtaskDescription: subtaskDescription,
+                subtaskDuration: subtaskDuration,
+                subtaskDifficulty: subtaskDifficulty,
+                bgColor: bgColor,
+                textColor: textColor,
+                taskid: taskid
+            }, function (data, status) {
+                // Check if the insertion was successful
+                if (status === 'success') {
+
+                    closesubtaskModal();
+                    // Reload the task list
+                    reloadTaskList();
+
+                    // Clear the form fields
+                    document.getElementById('subtaskTitle').value = '';
+                    document.getElementById('subtaskDescription').value = 'N/A';
+                    document.getElementById('subtaskDurationdays').value = '0';
+                    document.getElementById('subtaskDurationhours').value = '0';
+                    document.getElementById('subtaskDuration').value = '30';
+                    document.getElementById('subtaskDifficulty').value = 'Easy'; // Set to default value
+
+                } else {
+                }
+            });
+        });
+
+
+        function formatDuration(durationInMinutes) {
+            var days = Math.floor(durationInMinutes / (24 * 60));
+            var hours = Math.floor((durationInMinutes % (24 * 60)) / 60);
+            var minutes = durationInMinutes % 60;
+
+            var formattedDuration = "";
+            if (days > 0) {
+                formattedDuration += days + " day" + (days > 1 ? "s " : " ");
+            }
+            if (hours > 0) {
+                formattedDuration += hours + " hour" + (hours > 1 ? "s " : " ");
+            }
+            if (minutes > 0) {
+                formattedDuration += minutes + " min" + (minutes > 1 ? "s" : "");
+            }
+
+            return formattedDuration.trim();
+        }
+
+        // Function to format total completed time into days, hours, and minutes
+        function formatCompletedTime(totalCompletedTime) {
+            if (totalCompletedTime === null) {
+                return "0";
+            }
+
+            var parts = totalCompletedTime.split(':');
+            var days = Math.floor(parseInt(parts[0]) / 24);
+            var hours = parseInt(parts[0]) % 24;
+            var minutes = parseInt(parts[1]);
+
+            // Format the time in days, hours, and minutes
+            var formattedTime = "";
+            if (days > 0) {
+                formattedTime += days + " days ";
+            }
+            if (hours > 0) {
+                formattedTime += hours + " hours ";
+            }
+            if (minutes > 0) {
+                formattedTime += minutes + " mins";
+            }
+
+            return formattedTime;
+        }
+
+
+        function callsubtasktime() {
+            // Retrieve task ID dynamically from URL parameters
+            var taskID = getQueryParam('taskid');
+
+            // AJAX request to fetch task background color, text color, and due date
+            $.get("task/fetchTaskBackgroundColor.php?taskid=" + taskID, function (data) {
+                // Parse the JSON response
+                var taskData = JSON.parse(data);
+
+                // Check for errors
+                if (taskData.hasOwnProperty('error')) {
+                    console.error(taskData.error);
+                    return; // Exit the function if there's an error
+                }
+
+                // Retrieve the background color, text color, and due date from the task data
+                var taskBackgroundColor = taskData.TaskBackgroundColor;
+                var taskTextColor = taskData.TaskTextColor;
+                var taskDueDateTime = taskData.TaskDueDateTime;
+
+                var TotalAllottedTime = taskData.TotalAllottedTime;
+                var TotalCompletedTime = taskData.TotalCompletedTime;
+
+                console.log("Total Allotted Time:", TotalAllottedTime);
+                console.log("Total Completed Time:", TotalCompletedTime);
+
+                var formattedAllottedTime = formatDuration(TotalAllottedTime);
+                var formattedCompletedTime = formatCompletedTime(TotalCompletedTime);
+
+                console.log("Total Format Allotted Time:", formattedAllottedTime);
+                console.log("Total Completed Time:", formattedCompletedTime);
+
+                // Log the background color, text color, and due date to the console
+                console.log("Task Background Color:", taskBackgroundColor);
+                console.log("Task Text Color:", taskTextColor);
+                console.log("Task Due Date Time:", taskDueDateTime);
+
+                $('#timealloted').text("Total Allotted Time: " + formattedAllottedTime);
+                $('#timecompleted').text("Total Completed Time: " + formattedCompletedTime);
+
+                // Set the body background color and text color
+                document.body.style.backgroundColor = taskBackgroundColor;
+                document.body.style.color = taskTextColor;
+
+                // Function to update the countdown every minute
+                function updateCountdown() {
+                    var now = new Date();
+                    var dueDate = new Date(taskDueDateTime);
+                    var timeDiff = dueDate - now;
+
+                    if (timeDiff > 0) {
+                        // Calculate time difference in days, hours, minutes
+                        var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+                        var countdownText = "Time Remaining: " + days + " days, " + hours + " hours, " + minutes + " mins";
+                        $('#timeRemaining').text(countdownText);
+                    } else {
+                        // If subtaskendtime exists, display "Time Completed Under"
+                        $.get("subtask/subtaskendtime.php?taskid=" + taskID, function (endTimeData) {
+                            if (endTimeData.trim() !== "") {
+                                $('#timeRemaining').text("Time Completed on " + endTimeData.trim());
+                            } else {
+                                // Calculate overdue time in days, hours, minutes
+                                var overdueTime = -timeDiff; // make time difference positive
+                                var days = Math.floor(overdueTime / (1000 * 60 * 60 * 24));
+                                var hours = Math.floor((overdueTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                var minutes = Math.floor((overdueTime % (1000 * 60 * 60)) / (1000 * 60));
+
+                                var overdueText = "Overdue Time: " + days + " days, " + hours + " hours, " + minutes + " mins";
+                                $('#timeRemaining').text(overdueText);
+                            }
+                        });
+                    }
+                }
+
+                // Update the countdown immediately and then every minute
+                updateCountdown();
+                setInterval(updateCountdown, 60000); // Update every 60000 milliseconds (1 minute)
+            });
+        }
+
+
+
+
+        // Function to reload task list
+        function reloadTaskList() {
+            // Retrieve task ID dynamically from URL parameters
+            var taskID = getQueryParam('taskid');
+
+            // AJAX request to load subtasks
+            $.get("subtask/subtaskread.php?taskid=" + taskID, function (data) {
+                $("#subtaskList").html(data);
+            });
+        }
+
+    </script>
+
+
+    <script>
+        // Function to retrieve URL query parameters
+        function getQueryParam(param) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(param);
+        }
+
+        function opensubtaskModal() {
+            document.getElementById('subtaskmodal').classList.remove('hidden');
+        }
+
+        function closesubtaskModal() {
+            document.getElementById('subtaskmodal').classList.add('hidden');
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve task title from URL parameter
+            const taskTitle = getQueryParam('tasktitle');
+            const taskid = getQueryParam('taskid');
+
+            document.getElementById('taskTitle').textContent = taskTitle;
+
+            // Retrieve task ID dynamically from URL parameters
+            var taskID = getQueryParam('taskid');
+
+
+            // AJAX request to fetch completion indicator
+            $.get("subtask/subtaskcompletion.php?taskid=" + taskID, function (completionIndicator) {
+                console.log("Completion Indicator:", completionIndicator);
+                document.getElementById('completionIndicator').textContent = completionIndicator;
+            });
+        });
+
+        function toggleMenu() {
+            var dropdown = document.getElementById("dropdown");
+            dropdown.classList.toggle("active");
+        }
+
+        function logout() {
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task for Venture</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
+
+
+    <link rel="stylesheet" href="task.css">
+    <style>
+        #modal {
+            z-index: 1000;
+        }
+
+        .logindropdownmenu {
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-right: 50px;
+        }
+
+        .kebab-menu {
+            cursor: pointer;
+            position: relative;
+            /* For absolute positioning of the dropdown */
+
+            margin-left: auto;
+        }
+
+        .kebab-menu svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 220px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #574e4e;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            z-index: 1;
+            right: 0;
+            /* Aligns the dropdown to the right */
+            color: white;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+            color: white;
+        }
+
+        .kebab-icon {
+            width: 35px;
+            /* Adjust width as needed */
+            height: 35px;
+            /* Adjust height as needed */
+            filter: invert(100%);
+        }
+
+        .textmenu {
+            color: white;
+        }
+
+        #modal {
+            z-index: 1000;
+
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800">
+    <div class="container mx-auto mt-8">
+
+
+        <!-- Header -->
+        <div class="flex justify-between items-center px-4 py-2 ">
+            <h1 id="sharedTitle" class="text-6xl font-bold text-white">Shared Collaboration</h1>
+            <!-- Container that triggers the dropdown -->
+            <div class="relative flex items-center group hover:bg-gray-700 rounded-lg px-3 py-3"
+                data-dropdown-toggle="dropdownMenu" data-dropdown-placement="bottom-end">
+                <div id="UserFullName" class="text-lg text-white font-bold mr-5">
+                    Full Name
+                </div>
+                <div class="w-20 h-20 bg-gray-500 rounded-full flex justify-end">
+                    <img id="profileImage" class="w-full h-full rounded-full object-contain cursor-pointer" src=""
+                        alt="Profile Picture">
+                </div>
+            </div>
+
+            <!-- Dropdown menu -->
+            <div id="dropdownMenu"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                    <li>
+                        <a href="editprofile.html"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
+                    </li>
+                    <li>
+                        <a href="log/logout.php"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div id="currentUserUsername" class="text-lg font-bold text-white mr-5 ml-1"></div>
+
+
+
+        <!-- Task List Section -->
+        <section class="mt-8 mb-8">
+            <div id="taskList" class="grid grid-cols-1 gap-4"></div>
+        </section>
+
+        <!-- Back button -->
+        <button onclick="goBack()"
+            class="fixed bottom-8 left-8 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+            <div class="transform text-white text-2xl rotate-180 inline-block">➤</div>
+        </button>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <script>
+
+
+
+
+
+            function redirectToSubtask(taskID, taskTitle) {
+                // Encode the task title for URL
+                var encodedTaskTitle = encodeURIComponent(taskTitle);
+                // Construct the URL with task title and task ID
+                var url = "sharedsubtask.html?taskid=" + taskID + "&tasktitle=" + encodedTaskTitle;
+                // Navigate to the new URL
+                window.location.href = url;
+            }
+
+
+            // Function to fetch current user's username and update the UI
+            function fetchCurrentUserUsername() {
+                $.get("log/fetchCurrentUsername.php", function (username) {
+                    // Update the value of the div with the fetched username
+                    document.getElementById('currentUserUsername').textContent = "- " + username;
+                    // Log the username to console
+                    console.log("Current User:", username);
+                });
+            }
+
+
+            function goBack() {
+                window.history.back();
+            }
+
+            function fetchCollaboratorData() {
+                var currentUsername = document.getElementById('currentUserUsername').textContent.trim();
+                currentUsername = currentUsername.replace(/^- /, '');
+
+                // Call the PHP script with the current username as a parameter
+                $.get("sharedcollaboration/sharedread.php?username=" + currentUsername, function (data) {
+                    $("#taskList").html(data);
+
+
+                });
+            }
+
+            $(document).ready(function () {
+                var currentUsername = document.getElementById('currentUserUsername').textContent.trim();
+                currentUsername = currentUsername.replace(/^- /, '');
+
+                // Call the PHP script with the current username as a parameter
+                $.get("sharedcollaboration/sharedread.php?username=" + currentUsername, function (data) {
+                    $("#taskList").html(data);
+                });
+            });
+
+
+
+
+        </script>
+        <script>
+            function toggleMenu() {
+                var dropdown = document.getElementById("dropdown");
+                dropdown.classList.toggle("active");
+            }
+        
+            function logout() {
+                window.location.href = "../login.html";
+            }
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+
+            function fetchCurrentUser() {
+                $.get("log/fetchCurrentUsername.php", function (data) {
+                    // Parse the JSON response
+                    var userData = JSON.parse(data);
+
+                    // Check for errors
+                    if (userData.hasOwnProperty('error')) {
+                        console.error(userData.error);
+                        return; // Exit the function if there's an error
+                    }
+
+                    // Update the user's full name
+                    document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
+
+                    // Check if the profile image is set or not, use default if not
+                    if (userData.profileImage && userData.profileImage.trim() !== "") {
+                        document.getElementById('profileImage').src = userData.profileImage;
+                    } else {
+                        document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
+                    }
+                });
+            }
+
+            // Call the function when the window loads
+            window.onload = function () {
+                fetchCurrentUser();
+            };
+
+            function toggleMenu() {
+                var dropdown = document.getElementById("dropdown");
+                dropdown.classList.toggle("active");
+            }
+
+            function logout() {
+                window.location.href = "login.html";
+            }
+
+
+
+        </script>
+
+
+</body>
+
+</html>

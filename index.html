@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Taskmagnet</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        input:hover {
+            background-color: rgba(66, 55, 55, 0.346);
+            transition: background-color 0.3s ease;
+        }
+
+        .max-w-3xl {
+            margin-top: 20px;
+            /* Add margin at the top */
+            margin-bottom: 20px;
+            /* Add margin at the bottom */
+        }
+    </style>
+
+    <style>
+        .logindropdownmenu {
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 80px;
+            padding-right: 50px;
+        }
+
+        .kebab-menu {
+            cursor: pointer;
+            position: relative;
+
+        }
+
+        .kebab-menu svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 220px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #574e4e;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            z-index: 1;
+            right: 0;
+            /* Aligns the dropdown to the right */
+            color: white;
+            width: 130px;
+            /* Adjust the width as needed */
+            text-align: center;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+            color: white;
+        }
+
+        .kebab-icon {
+            width: 24px;
+            /* Adjust width as needed */
+            height: 24px;
+            /* Adjust height as needed */
+            filter: invert(100%);
+        }
+
+        .textmenu {
+            color: white;
+        }
+
+        #modal {
+            z-index: 1000;
+
+        }
+    </style>
+
+
+</head>
+<script>
+    function toggleMenu() {
+        var dropdown = document.getElementById("dropdown");
+        dropdown.classList.toggle("active");
+    }
+
+    function logout() {
+        window.location.href = "../login.html";
+    }
+</script>
+
+<body class="bg-gray-900 text-white container mx-auto mt-8">
+
+
+
+
+    <!-- Header -->
+    <div class="flex justify-between items-center px-4 py-2 ">
+        <h1 class="text-7xl font-bold">TaskMagnet</h1>
+        <!-- Container that triggers the dropdown -->
+        <div class="relative flex items-center group hover:bg-gray-700 rounded-lg px-3 py-3"
+            data-dropdown-toggle="dropdownMenu" data-dropdown-placement="bottom-end">
+            <div id="UserFullName" class="text-lg text-white font-bold mr-5">
+                Full Name
+            </div>
+            <div class="w-20 h-20 bg-gray-500 rounded-full flex justify-end">
+                <img id="profileImage" class="w-full h-full rounded-full object-contain cursor-pointer" src=""
+                    alt="Profile Picture">
+            </div>
+        </div>
+
+        <!-- Dropdown menu -->
+        <div id="dropdownMenu"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                    <a href="editprofile.html"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
+                </li>
+                <li>
+                    <a href="log/logout.php"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <!-- Rectangular box with plus symbol -->
+    <div class="mx-auto mt-8 w-24 h-24 mb-8 flex items-center justify-center border border-white rounded-md cursor-pointer"
+        onclick="openModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+            </path>
+        </svg>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden text-white" id="modal">
+        <div 
+        class="absolute top-1/2 left-1/2 w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-8 rounded-lg max-h-screen overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-4">Venture Settings</h2>
+            <div class="mb-4">
+                <label class="block mb-2">Venture Title</label>
+                <input type="text" id="VentureTitle"
+                    class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-2">Venture Description</label>
+                <textarea id="VentureDescription"
+                    class="bg-gray-800 text-white px-4 py-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block mb-2">Venture Background Color</label>
+                <input type="color" id="bgColor" value="#0000FF"
+                    class="bg-gray-800 text-white w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-2">Venture Text Color</label>
+                <input type="color" id="textColor" value="#FFFFFF"
+                    class="bg-gray-800 text-white w-full rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+
+
+
+            <div class="flex justify-end">
+                <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-2" id="closeModal"
+                    onclick="closeModal()">Cancel</button>
+                <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" id="saveChanges">Save
+                    Changes</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="flex justify-end items-center space-x-4 relative mb-8">
+        <button id="btnshared"
+            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-blue-600 font-bold text-2xl">Shared
+            Collaborations</button>
+    </div>
+
+
+
+
+    <!-- Ventures list container -->
+    <div id="venturesList" class="venturesList"></div>
+
+    <script>
+
+        function fetchCurrentUser() {
+            $.get("log/fetchCurrentUsername.php", function (data) {
+                // Parse the JSON response
+                var userData = JSON.parse(data);
+
+                // Check for errors
+                if (userData.hasOwnProperty('error')) {
+                    console.error(userData.error);
+                    return; // Exit the function if there's an error
+                }
+
+                // Update the user's full name
+                document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
+
+                // Check if the profile image is set or not, use default if not
+                if (userData.profileImage && userData.profileImage.trim() !== "") {
+                    document.getElementById('profileImage').src = userData.profileImage;
+                } else {
+                    document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
+                }
+            });
+        }
+
+        // Call the function when the window loads
+        window.onload = function () {
+            fetchCurrentUser();
+        };
+        // Function to handle redirection to sharedcollaboration.html
+        function redirectToSharedCollaboration() {
+            window.location.href = "sharedcollaboration.html";
+        }
+
+        // Add event listener to the btnshared button
+        document.getElementById('btnshared').addEventListener('click', redirectToSharedCollaboration);
+
+
+        function redirectToTask(VentureTitle, ventureID) {
+            // Encode the venture title to handle special characters properly in the URL
+            var encodedVentureTitle = encodeURIComponent(VentureTitle);
+            // Redirect to task.html with the VentureTitle and ventureID as query parameters
+            window.location.href = "task.html?title=" + encodedVentureTitle + "&id=" + ventureID;
+        }
+
+
+
+        // Open Modal
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        };
+
+        function loadVentures() {
+    // Assuming you have an endpoint that returns the list of ventures in HTML format
+    $.get("venture/readventure.php", function (data) {
+        $("#venturesList").html(data);
+    });
+}
+
+        function saveChanges() {
+            var VentureTitle = document.getElementById('VentureTitle').value;
+            var VentureDescription = document.getElementById('VentureDescription').value;
+            var bgColor = document.getElementById('bgColor').value;
+            var textColor = document.getElementById('textColor').value;
+
+            // AJAX request to send data to insertventure.php
+            $.ajax({
+                type: "POST",
+                url: "venture/insertventure.php",
+                data: {
+                    VentureTitle: VentureTitle,
+                    VentureDescription: VentureDescription,
+                    bgColor: bgColor,
+                    textColor: textColor
+                },
+                success: function (response) {
+                    closeModal(); // Close the modal after saving
+                    loadVentures(); // Load ventures to update the list
+                },
+                error: function () {
+                    alert("Error saving venture.");
+                }
+            });
+        }
+
+
+        // Ensure this function is called when the document is ready
+        $(document).ready(function () {
+            loadVentures(); // Load ventures when document is ready
+        });
+
+
+
+        document.getElementById('saveChanges').addEventListener('click', saveChanges);
+
+
+
+        $(document).ready(function () {
+
+
+            $(document).on("click", ".editventure", function () {
+                var ventureID = $(this).closest(".ventureshape").find(".ventureID").val();
+                var VentureTitle = $(this).closest(".ventureshape").find(".VentureTitle").val();
+                $.post("venture/editventure.php", {
+                    VentureID: ventureID,
+                    VentureTitle: VentureTitle
+                }, function (data, status) {
+                    // Optionally update UI if needed
+                });
+            });
+
+            $(document).on("click", ".deleteventure", function () {
+                var ventureID = $(this).closest(".ventureshape").find(".ventureID").val();
+                if (confirm("Are you sure you want to delete this venture?")) {
+                    $.post("venture/deleteventure.php", {
+                        VentureID: ventureID
+                    }, function (data, status) {
+                        loadVentures(); // Reload ventures to reflect the deletion
+                    });
+                }
+            });
+
+
+        });
+
+
+    </script>
+
+
+
+</body>
+
+</html>
