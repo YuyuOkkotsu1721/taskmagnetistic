@@ -18,7 +18,7 @@ if (isset($_SESSION["userID"])) {
             $fileExtension = strtolower(end($fileNameCmps));
 
             $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-            $uploadPath = 'profilepics/' . $newFileName;
+            $uploadPath = '../profilepics/' . $newFileName;
             
             if(move_uploaded_file($fileTmpPath, $uploadPath)) {
                 // Update UserProfileImage column in the database
