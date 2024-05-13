@@ -4,7 +4,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle image upload
-    $targetDir = "profilepics/";
+    $targetDir = "../profilepics/";
     $fileName = basename($_FILES["editImage"]["name"]);
     $targetFilePath = $targetDir . $fileName;
     $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
