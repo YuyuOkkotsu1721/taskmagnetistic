@@ -1733,8 +1733,6 @@ if (isset($_SESSION["userID"])) {
 
 
 
-                // Add event listener for double-click to toggle checkmark
-                document.getElementById('editsubtaskDescription').addEventListener('dblclick', checkForBoxClick);
 
                 function updateTimer() {
                     <?php

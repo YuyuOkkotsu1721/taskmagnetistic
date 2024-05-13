@@ -491,6 +491,7 @@ if (isset($_SESSION["userID"])) {
                                 </p>
                             </div>
 
+                            <?php if ($clbstatus) { ?>
 
                             <?php if (!empty($assignedTo)) { ?>
                                 <p style="color: <?php echo $row['SubtaskTextColor']; ?>;" id="assignedName"
@@ -498,6 +499,10 @@ if (isset($_SESSION["userID"])) {
                                     <?php echo $assignedTo; ?>
                                 </p>
                             <?php } ?>
+                            <?php } ?>
+
+
+
 
 
                             <div class="flex justify-center items-center mt-4">
@@ -1730,9 +1735,6 @@ if (isset($_SESSION["userID"])) {
 
 
 
-
-                // Add event listener for double-click to toggle checkmark
-                document.getElementById('editsubtaskDescription').addEventListener('dblclick', checkForBoxClick);
 
                 function updateTimer() {
                     <?php
