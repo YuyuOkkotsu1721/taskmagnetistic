@@ -906,7 +906,7 @@ function updateBuzzList(data) {
             $('#buzzlist').append(html);
         });
     } else {
-        $('#buzzlist').html('<p>No pending revisions.</p>');
+        $('#buzzlist').html('<p></p>');
     }
 }
 
@@ -1041,7 +1041,7 @@ function updateBuzzNotify(subtaskID, taskID, userID) {
                             contentType: false,
                             success: function (response) {
                                 console.log("Message Sent: " + response);
-                                fetchAndDisplayMessages(subtaskID)
+                                fetchBuzzChatsread();
                                 document.getElementById("chatinput").value = "";
                             },
                             error: function (xhr, status, error) {
@@ -1061,19 +1061,27 @@ function updateBuzzNotify(subtaskID, taskID, userID) {
                         // Get the subtaskID
                         var subtaskID = document.getElementById("chatsubtaskid").textContent;
                         // Fetch and display messages
-                        fetchAndDisplayMessages(subtaskID);
+                        fetchBuzzChatsread();
                     }
                 }
 
 
-                function fetchAndDisplayMessages(subtaskID) {
-                    $.get("buzz/buzzchatread.php?SubtaskID=" + subtaskID, function (data) {
-                        // Assuming the response from buzzchats.php is in HTML format
-                        $("#chatmessagecontent").html(data);
-                        // After updating the content, scroll to the bottom
-                        $("#chatmessagecontent").scrollTop($("#chatmessagecontent")[0].scrollHeight);
-                    });
-                }
+                function fetchBuzzChatsread() {
+    var subtaskID = document.getElementById("chatsubtaskid").textContent;
+    $.ajax({
+        url: 'buzz/buzzchatread.php',
+        type: 'GET',
+        data: { SubtaskID: subtaskID },
+        success: function(response) {
+            // Update chat list
+            $("#chatmessagecontent").html(response);
+            // Scroll to the bottom after updating
+            $("#chatmessagecontent").scrollTop($("#chatmessagecontent")[0].scrollHeight);
+        }
+    });
+}
+
+setInterval(fetchBuzzChatsread, 2000);
 
 
 
@@ -1867,7 +1875,7 @@ function updateBuzzNotify(subtaskID, taskID, userID) {
                     ?>
                 }
 
-                setInterval(updateTimer, 1000);
+                setInterval(updateTimer, 2000);
 
 
                 function openImageModal(imagePath) {

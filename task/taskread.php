@@ -93,11 +93,14 @@ if (mysqli_num_rows($result) > 0) {
                         <input type="text"
                             class="text-2xl md:text-3xl font-bold mb-2 bg-transparent text-white outline-none border-none w-full mb-4"
                             id="TaskTitleInput" name="TaskTitleInput" value="<?php echo $row['TaskTitle']; ?>" <?php echo
-                                   $textColorStyle; ?>><br>
+                                   $textColorStyle; ?>>   <br>
                         <!-- Task Description Input -->
-                        <textarea id="TaskDescriptionInput" name="TaskDescriptionInput" 
-                        class="text-lg bg-transparent md:text-xl text-white outline-none border-none resize-none w-full overflow-hidden break-word" 
-                        style="color: #ffffff;">The task of finishing the database project for PE- ADVANCED DATABASES LEC</textarea>
+                        <textarea id="TaskDescriptionInput" name="TaskDescriptionInput"
+                            class="text-lg bg-transparent md:text-xl text-white  w-11/12 overflow-hidden break-word"
+                            <?php echo $textColorStyle; ?>><?php echo $row['TaskDescription']; ?></textarea>
+
+
+
 
                     </div>
                     <!-- Creation Date -->

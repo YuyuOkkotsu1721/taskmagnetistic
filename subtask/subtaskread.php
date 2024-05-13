@@ -912,7 +912,7 @@ function updateBuzzList(data) {
                 $('#buzzlist').append(subtaskHtml);
             });
         } else {
-            $('#buzzlist').append("<p>No tasks found.</p>");
+            $('#buzzlist').append("<p></p>");
         }
     } catch (error) {
         console.error("Error parsing JSON data:", error);
@@ -982,11 +982,11 @@ $(document).ready(function() {
     fetchBuzzChats();
     
     // Fetch buzz chats every 10 seconds
-    setInterval(fetchBuzzChats, 2000);
+    setInterval(fetchBuzzChats, 1000);
 
 
     fetchReviewSubtasks();  // Initial fetch when the page loads
-    setInterval(fetchReviewSubtasks, 2000); // Poll every 10 seconds
+    setInterval(fetchReviewSubtasks, 1000); // Poll every 10 seconds
 });
 
 
@@ -1082,7 +1082,7 @@ function updateBuzzNotify(subtaskID, taskID, userID) {
                             contentType: false,
                             success: function (response) {
                                 console.log("Message Sent: " + response);
-                                fetchAndDisplayMessages(subtaskID)
+                                fetchBuzzChatsread();
                                 document.getElementById("chatinput").value = "";
                             },
                             error: function (xhr, status, error) {
@@ -1099,22 +1099,29 @@ function updateBuzzNotify(subtaskID, taskID, userID) {
                     modal.style.display = show ? 'flex' : 'none';
 
                     if (show) {
-                        // Get the subtaskID
                         var subtaskID = document.getElementById("chatsubtaskid").textContent;
-                        // Fetch and display messages
-                        fetchAndDisplayMessages(subtaskID);
+                        fetchBuzzChatsread();
                     }
                 }
 
 
-                function fetchAndDisplayMessages(subtaskID) {
-                    $.get("buzz/buzzchatread.php?SubtaskID=" + subtaskID, function (data) {
-                        // Assuming the response from buzzchats.php is in HTML format
-                        $("#chatmessagecontent").html(data);
-                        // After updating the content, scroll to the bottom
-                        $("#chatmessagecontent").scrollTop($("#chatmessagecontent")[0].scrollHeight);
-                    });
-                }
+function fetchBuzzChatsread() {
+    var subtaskID = document.getElementById("chatsubtaskid").textContent;
+    $.ajax({
+        url: 'buzz/buzzchatread.php',
+        type: 'GET',
+        data: { SubtaskID: subtaskID },
+        success: function(response) {
+            // Update chat list
+            $("#chatmessagecontent").html(response);
+            // Scroll to the bottom after updating
+            $("#chatmessagecontent").scrollTop($("#chatmessagecontent")[0].scrollHeight);
+        }
+    });
+}
+
+setInterval(fetchBuzzChatsread, 1000);
+
 
 
                 function convertDurationToMinutes(durationString) {
