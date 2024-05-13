@@ -271,10 +271,13 @@ while ($row = mysqli_fetch_assoc($resultSubtasksWithMarkNumber)) {
             $imageTmpName = $image['tmp_name'];
             $imageError = $image['error'];
 
+
             // Check if image upload was successful
             if ($imageError === UPLOAD_ERR_OK) {
                 // Move the uploaded image to the target directory
-                $uploadPath = 'uploads/' . $imageName;
+                $uploadPath =  $imageName;
+                
+
                 if (move_uploaded_file($imageTmpName, $uploadPath)) {
                     // Prepare a SQL query to update the subtask image
                     $sqlImageUpdate = "UPDATE subtasks SET SubtaskImage = '$uploadPath' WHERE SubtaskID = '$subtaskID'";
