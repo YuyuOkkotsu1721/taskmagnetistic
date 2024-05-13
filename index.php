@@ -191,8 +191,7 @@
 
     <div class="flex justify-end items-center space-x-4 relative mb-8">
         <button id="btnshared"
-            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-blue-600 font-bold text-2xl">Shared
-            Collaborations</button>
+            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-blue-600 font-bold text-2xl">Shared Tasks to You</button>
     </div>
 
 
