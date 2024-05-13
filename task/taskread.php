@@ -95,9 +95,10 @@ if (mysqli_num_rows($result) > 0) {
                             id="TaskTitleInput" name="TaskTitleInput" value="<?php echo $row['TaskTitle']; ?>" <?php echo
                                    $textColorStyle; ?>><br>
                         <!-- Task Description Input -->
-                        <input type="text" id="TaskDescriptionInput" name="TaskDescriptionInput"
-                            class="text-lg bg-transparent md:text-xl text-white outline-none border-none resize-none w-full"
-                            value="<?php echo $row['TaskDescription']; ?>" <?php echo $textColorStyle; ?>>
+                        <textarea id="TaskDescriptionInput" name="TaskDescriptionInput" 
+                        class="text-lg bg-transparent md:text-xl text-white outline-none border-none resize-none w-full overflow-hidden break-word" 
+                        style="color: #ffffff;">The task of finishing the database project for PE- ADVANCED DATABASES LEC</textarea>
+
                     </div>
                     <!-- Creation Date -->
                     <div class="absolute top-0 right-0 mt-2 md:mt-4 mr-10 md:mr-16 text-white font-medium text-sm" <?php echo
@@ -120,7 +121,7 @@ if (mysqli_num_rows($result) > 0) {
 
                     <!-- Additional Elements -->
                     <div id="taskdetails"
-                        class="absolute bottom-0 left-6 mb-4 flex flex-wrap justify-center space-x-1 ">
+                        class="absolute bottom-0 left-12 mb-4 flex flex-wrap justify-center space-x-1 ">
                         <!-- Completion Button -->
                         <button class="bg-gray-700 font-medium text-white text-sm responsive-curve1 rounded-l-full p-2 overflow-hidden break-words"
                             style="background-color: <?php echo $row['TaskTextColor']; ?>; color: <?php echo $row['TaskBackgroundColor']; ?>;">

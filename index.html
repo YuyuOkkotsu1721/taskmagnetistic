@@ -265,31 +265,36 @@
     });
 }
 
-        function saveChanges() {
-            var VentureTitle = document.getElementById('VentureTitle').value;
-            var VentureDescription = document.getElementById('VentureDescription').value;
-            var bgColor = document.getElementById('bgColor').value;
-            var textColor = document.getElementById('textColor').value;
+function saveChanges() {
+    var VentureTitle = document.getElementById('VentureTitle').value;
+    var VentureDescription = document.getElementById('VentureDescription').value;
+    var bgColor = document.getElementById('bgColor').value;
+    var textColor = document.getElementById('textColor').value;
 
-            // AJAX request to send data to insertventure.php
-            $.ajax({
-                type: "POST",
-                url: "venture/insertventure.php",
-                data: {
-                    VentureTitle: VentureTitle,
-                    VentureDescription: VentureDescription,
-                    bgColor: bgColor,
-                    textColor: textColor
-                },
-                success: function (response) {
-                    closeModal(); // Close the modal after saving
-                    loadVentures(); // Load ventures to update the list
-                },
-                error: function () {
-                    alert("Error saving venture.");
-                }
-            });
+    // AJAX request to send data to insertventure.php
+    $.ajax({
+        type: "POST",
+        url: "venture/insertventure.php",
+        data: {
+            VentureTitle: VentureTitle,
+            VentureDescription: VentureDescription,
+            bgColor: bgColor,
+            textColor: textColor
+        },
+        success: function (response) {
+            // Clear title and description fields
+            document.getElementById('VentureTitle').value = "";
+            document.getElementById('VentureDescription').value = "";
+
+            closeModal(); // Close the modal after saving
+            loadVentures(); // Load ventures to update the list
+        },
+        error: function () {
+            alert("Error saving venture.");
         }
+    });
+}
+
 
 
         // Ensure this function is called when the document is ready

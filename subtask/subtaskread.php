@@ -658,10 +658,7 @@ if (isset($_SESSION["userID"])) {
 
                             <div class="flex items-center mb-4" onclick="stopPropagation(event)">
                                 <label class="inline-block mb">Subtask Description</label>
-                                <div class="inline-flex items-center">
-                                    <button class="ml-4 text-white text-2xl">☐</button>
-                                    <button class="ml-2 text-white text-2xl">&#9745;</button>
-                                </div>
+
                             </div>
                             <textarea id="editsubtaskDescription"
                                 class="bg-gray-800 text-white px-4 py-2 w-full h-48 rounded focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
@@ -1730,42 +1727,9 @@ if (isset($_SESSION["userID"])) {
                     }
                 }
 
-                function addCheckmark() {
-                    const textarea = document.getElementById('editsubtaskDescription');
-                    textarea.value += '☐ '; // Appends the checkmark at a new line
-                    textarea.focus(); // Optionally set focus back to the textarea
-                }
 
-                function checkForBox(event) {
-                    const textarea = event.target;
-                    const cursorPosition = textarea.selectionStart;
-                    const text = textarea.value;
-                    const boxIndex = text.indexOf("☐", cursorPosition);
 
-                    if (boxIndex !== -1) {
-                        textarea.style.cursor = "pointer";
-                    } else {
-                        textarea.style.cursor = "auto";
-                    }
-                }
 
-                function checkForBoxClick(event) {
-                    const textarea = event.target;
-                    const cursorPosition = textarea.selectionStart;
-                    const text = textarea.value;
-                    const boxIndex = text.indexOf("☐", cursorPosition);
-
-                    if (boxIndex !== -1) {
-                        const newText = text.substring(0, boxIndex) + "☑" + text.substring(boxIndex + 1);
-                        textarea.value = newText;
-                    } else {
-                        const checkIndex = text.indexOf("☑", cursorPosition);
-                        if (checkIndex !== -1) {
-                            const newText = text.substring(0, checkIndex) + "☐" + text.substring(checkIndex + 1);
-                            textarea.value = newText;
-                        }
-                    }
-                }
 
                 // Add event listener for double-click to toggle checkmark
                 document.getElementById('editsubtaskDescription').addEventListener('dblclick', checkForBoxClick);
