@@ -149,7 +149,7 @@ if (isset($_SESSION["userID"])) {
             <?php if ($clbstatus) { ?>
                 <button id="buzznotificationButton"
                     style="background-color: <?php echo $taskBackgroundColor; ?>; color: <?php echo $taskTextColor; ?>;   filter: brightness(135%);"
-                    class="fixed bottom-0 left-5 bg-yellow-500 text-white px-4 py-2 rounded shadow w-96 text-3xl font-bold flex items-center justify-between"
+                    class="fixed bottom-0 right-6 bg-yellow-500 text-white px-4 py-2 rounded shadow w-96 text-3xl font-bold flex items-center justify-between"
                     onclick="openBuzzModal()">
                     Notification
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-0 transition duration-300" fill="none"
@@ -159,7 +159,7 @@ if (isset($_SESSION["userID"])) {
                 </button>
 
                 <div id="buzznotificationmodal"
-                    class="fixed bottom-0 left-5 bg-white text-black rounded-t-lg  shadow-lg hidden w-96 bg-transparent ">
+                    class="fixed bottom-0 right-6 bg-white text-black rounded-t-lg  shadow-lg hidden w-96 bg-transparent ">
                     <!-- Modal content -->
                     <!-- Header -->
                     <div style="background-color: <?php echo $taskBackgroundColor; ?>; color: <?php echo $taskTextColor; ?>;   filter: brightness(135%);"
