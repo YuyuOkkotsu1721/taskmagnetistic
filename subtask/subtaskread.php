@@ -159,7 +159,7 @@ if (isset($_SESSION["userID"])) {
                 </button>
 
                 <div id="buzznotificationmodal"
-                    class="fixed bottom-0 right-6 bg-white text-black rounded-t-lg  shadow-lg hidden w-96 bg-transparent ">
+                    class="fixed bottom-0 right-6 bg-white text-black rounded-t-lg  shadow-lg w-96 bg-transparent ">
                     <!-- Modal content -->
                     <!-- Header -->
                     <div style="background-color: <?php echo $taskBackgroundColor; ?>; color: <?php echo $taskTextColor; ?>;   filter: brightness(135%);"
@@ -174,43 +174,18 @@ if (isset($_SESSION["userID"])) {
                     </div>
                     <div id="buzzbody" style="max-height:600px;" class="overflow-y-auto">
 
-                        <div id="buzzlist" class="text-black ">
-                            <?php
-                            // Fetch and display subtasks with SubtaskStatus of 'Done (For Review)'
-                            $doneForReviewSQL = "SELECT SubtaskID, SubtaskTitle, SubtaskDescription, SubtaskDuration, SubtaskDifficulty, SubtaskCreationDate, SubtaskBackgroundColor, SubtaskTextColor, SubtaskStatus, SubtaskMarkNumber, SubtaskImage, SubtaskStartTime, SubtaskEndTime, SubtaskPausedDuration  FROM subtasks WHERE TaskID = '$taskID' AND SubtaskStatus = 'Done (For Review)'";
-                            $doneForReviewResult = mysqli_query($link, $doneForReviewSQL);
+                    <div id="buzzlist" class="text-black">
+                        <!-- Content here will be dynamically filled by the updateBuzzList JavaScript function. -->
+                        <p class="ml-4">Loading tasks...</p>
+                    </div>
 
-                            if (mysqli_num_rows($doneForReviewResult) > 0) {
-                                while ($row = mysqli_fetch_assoc($doneForReviewResult)) {
-                                    // Replace line breaks in subtask description
-                                    $subtaskDescription = str_replace("\r\n", '147linebreakbymatthew', $row['SubtaskDescription']);
-                                    $subtaskDescription = str_replace(array("\r", "\n"), '147linebreakbymatthew', $subtaskDescription);
 
-                                    echo "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>{$row['SubtaskTitle']}</span></p>";
-
-                                    echo "<div class='flex justify-end'>";
-                                    // Updated button with onclick attribute
-                                    echo "<button onclick=\"openVisualModal('{$row['SubtaskID']}', '" . addslashes($row['SubtaskTitle']) . "', '" . addslashes($subtaskDescription) . "', '{$row['SubtaskDuration']}', '{$row['SubtaskDifficulty']}', '{$row['SubtaskBackgroundColor']}', '{$row['SubtaskTextColor']}', '{$row['SubtaskStatus']}', '{$row['SubtaskMarkNumber']}', '{$row['SubtaskStartTime']}', '{$row['SubtaskEndTime']}', '{$row['SubtaskPausedDuration']}', '{$row['SubtaskCreationDate']}', '{$row['SubtaskImage']}')\"  class='px-4 py-2 mr-4 rounded-md bg-green-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Done (For Review)</button>";
-                                    echo "</div>";
-
-                                    echo "<hr class='border-gray-400 mt-4 mx-0'>";
-                                }
-                            } else {
-                                echo "<p></p>";
-                            }
-                            ?>
-                        </div>
-
-                        <div class="hidden" id="chatuserid"><?php echo isset($_SESSION['userID']) ? $_SESSION['userID'] : ''; ?></div>
+                    <div class="hidden" id="chatuserid"><?php echo isset($_SESSION['userID']) ? $_SESSION['userID'] : ''; ?></div>
 
                         <div id="chatlist" class="text-black">
                             <!-- Chat list will be dynamically updated here -->
                             <hr class='border-gray-400 mt-4 mx-0'>
                         </div>
-
-
-
-
 
                     </div>
 
@@ -921,10 +896,50 @@ if (isset($_SESSION["userID"])) {
 
             <script>
 
+
+function updateBuzzList(data) {
+    $('#buzzlist').empty(); // Clear previous data
+
+    try {
+        var subtasks = JSON.parse(data);
+        if (Array.isArray(subtasks) && subtasks.length > 0) {
+            subtasks.forEach(function(subtask) {
+                var description = subtask.SubtaskDescription.replace(/147linebreakbymatthew/g, '<br>');
+                var subtaskHtml = "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + subtask.SubtaskTitle + "</span></p>" +
+                    "<div class='flex justify-end'>" +
+                    "<button onclick=\"openVisualModal('" + subtask.SubtaskID + "', '" + subtask.SubtaskTitle + "', '" + description + "', '" + subtask.SubtaskDuration + "', '" + subtask.SubtaskDifficulty + "', '" + subtask.SubtaskBackgroundColor + "', '" + subtask.SubtaskTextColor + "', '" + subtask.SubtaskStatus + "', '" + subtask.SubtaskMarkNumber + "', '" + subtask.SubtaskStartTime + "', '" + subtask.SubtaskEndTime + "', '" + subtask.SubtaskPausedDuration + "', '" + subtask.SubtaskCreationDate + "', '" + subtask.SubtaskImage + "')\"  class='px-4 py-2 mr-4 rounded-md bg-green-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Done (For Review)</button>" +
+                    "</div><hr class='border-gray-400 mt-4 mx-0'>";
+                $('#buzzlist').append(subtaskHtml);
+            });
+        } else {
+            $('#buzzlist').append("<p>No tasks found.</p>");
+        }
+    } catch (error) {
+        console.error("Error parsing JSON data:", error);
+    }
+}
+
+// Function to fetch review subtasks
+function fetchReviewSubtasks() {
+    $.ajax({
+        url: 'subtask/fetchbuzzreview.php',
+        type: 'GET',
+        data: { taskID: '<?php echo $taskID; ?>' },
+        success: function(response) {
+            updateBuzzList(response);
+        }
+    });
+}
+
+
+
+
+
+
     // Function to fetch buzz chats
     function fetchBuzzChats() {
         $.ajax({
-            url: 'fetchbuzzchats.php',
+            url: 'subtask/fetchbuzzchats.php',
             type: 'GET',
             data: { taskID: '<?php echo $taskID; ?>' },
             success: function(response) {
@@ -934,24 +949,80 @@ if (isset($_SESSION["userID"])) {
         });
     }
 
-    // Function to update chat list with fetched data
-    function updateChatList(data) {
-        $('#chatlist').empty(); // Clear previous data
-        data.forEach(function(item) {
-            var pausedDuration = item.SubtaskPausedDuration ? item.SubtaskPausedDuration : '00:00:00';
-            var buttonHtml = "<button onclick=\"updateBuzzNotify('" + item.SubtaskID + "', '<?php echo $taskID; ?>', '" + item.UserID + "'); openVisualModal('" + item.SubtaskID + "', '" + item.SubtaskTitle + "', '" + item.SubtaskDescription + "', '" + item.SubtaskDuration + "', '" + item.SubtaskDifficulty + "', '" + item.SubtaskBackgroundColor + "', '" + item.SubtaskTextColor + "', '" + item.SubtaskStatus + "', '" + item.SubtaskMarkNumber + "', '" + item.SubtaskStartTime + "', '" + item.SubtaskEndTime + "', '" + pausedDuration + "', '" + item.SubtaskCreationDate + "', '" + item.SubtaskImage + "'); toggleChatModal(true);\" class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Buzz Raised </button>";
-            var chatHtml = "<div class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + item.SubtaskTitle + "</span></div>" +
-                "<div class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>" + item.BuzzMessage + "</span></div>" +
-                "<div class='flex justify-end'>" + buttonHtml + "</div>";
+// Function to update chat list with fetched data
+function updateChatList(data) {
+    $('#chatlist').empty(); // Clear previous data
 
-            $('#chatlist').append(chatHtml);
-        });
+    // Parse the data string into an array of objects
+    try {
+        var dataArray = JSON.parse(data);
+
+        // Check if dataArray is an array
+        if (Array.isArray(dataArray)) {
+            dataArray.forEach(function(item) {
+                var pausedDuration = item.SubtaskPausedDuration ? item.SubtaskPausedDuration : '00:00:00';
+                var buttonHtml = "<button onclick=\"updateBuzzNotify('" + item.SubtaskID + "', '<?php echo $taskID; ?>', '" + item.UserID + "'); openVisualModal('" + item.SubtaskID + "', '" + item.SubtaskTitle + "', '" + item.SubtaskDescription + "', '" + item.SubtaskDuration + "', '" + item.SubtaskDifficulty + "', '" + item.SubtaskBackgroundColor + "', '" + item.SubtaskTextColor + "', '" + item.SubtaskStatus + "', '" + item.SubtaskMarkNumber + "', '" + item.SubtaskStartTime + "', '" + item.SubtaskEndTime + "', '" + pausedDuration + "', '" + item.SubtaskCreationDate + "', '" + item.SubtaskImage + "'); toggleChatModal(true);\" class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Buzz Raised </button>";
+                var chatHtml = "<div class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + item.SubtaskTitle + "</span></div>" +
+                    "<div class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>" + item.BuzzMessage + "</span></div>" +
+                    "<div class='flex justify-end'>" + buttonHtml + "</div>";
+
+                $('#chatlist').append(chatHtml);
+            });
+        } else {
+            console.error("Data array is not an array:", dataArray);
+        }
+    } catch (error) {
+        console.error("Error parsing JSON data:", error);
     }
+}
 
-    // Fetch buzz chats every 2 seconds
+
+$(document).ready(function() {
+    // Trigger fetchBuzzChats() when the page is loaded
+    fetchBuzzChats();
+    
+    // Fetch buzz chats every 10 seconds
     setInterval(fetchBuzzChats, 2000);
 
 
+    fetchReviewSubtasks();  // Initial fetch when the page loads
+    setInterval(fetchReviewSubtasks, 2000); // Poll every 10 seconds
+});
+
+
+
+
+
+function updateBuzzNotify(subtaskID, taskID, userID) {
+                    // Create FormData object
+                    var formData = new FormData();
+                    formData.append('SubtaskID', subtaskID);
+                    formData.append('TaskID', taskID);
+                    formData.append('UserID', userID);
+
+
+                    console.log(subtaskID);
+                    console.log(taskID);
+                    console.log(userID);
+
+                    // Send AJAX request
+                    $.ajax({
+                        type: "POST",
+                        url: "buzz/updatebuzznotify.php",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            // Handle success response if needed
+                            console.log(response);
+
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error response if needed
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
 
 
 
@@ -971,30 +1042,6 @@ if (isset($_SESSION["userID"])) {
 
 
 
-                function updateBuzzNotify(subtaskID, taskID, userID) {
-                    // Create FormData object
-                    var formData = new FormData();
-                    formData.append('SubtaskID', subtaskID);
-                    formData.append('TaskID', taskID);
-                    formData.append('UserID', userID);
-
-                    // Send AJAX request
-                    $.ajax({
-                        type: "POST",
-                        url: "buzz/updatebuzznotify.php",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            // Handle success response if needed
-                            console.log(response);
-                        },
-                        error: function (xhr, status, error) {
-                            // Handle error response if needed
-                            console.error(xhr.responseText);
-                        }
-                    });
-                }
 
                 // Add event listener for Enter key press on textarea
                 document.getElementById("chatinput").addEventListener("keypress", function (event) {
@@ -1852,6 +1899,7 @@ if (isset($_SESSION["userID"])) {
                     $.get("subtask/subtaskread.php?taskid=" + taskID, function (data) {
                         $("#subtaskList").html(data);
                     });
+                    
                 }
 
 

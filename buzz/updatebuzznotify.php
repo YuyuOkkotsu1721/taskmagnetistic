@@ -13,7 +13,7 @@ if (isset($_POST['SubtaskID'], $_POST['TaskID'], $_POST['UserID'])) {
     $updateResult = mysqli_query($link, $updateSQL);
 
     if ($updateResult) {
-        echo "BuzzNotify status updated successfully.";
+        echo "$subtaskID, $taskID, $userID";
     } else {
         echo "Error updating BuzzNotify status: " . mysqli_error($link);
     }

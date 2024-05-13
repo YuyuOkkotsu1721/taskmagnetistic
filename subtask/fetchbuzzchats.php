@@ -45,7 +45,9 @@ if (isset($_SESSION["userID"])) {
             'SubtaskEndTime' => $row['SubtaskEndTime'],
             'SubtaskPausedDuration' => $pausedDuration,
             'SubtaskCreationDate' => $row['SubtaskCreationDate'],
-            'SubtaskImage' => $row['SubtaskImage']
+            'SubtaskImage' => $row['SubtaskImage'],
+            'UserID' => $row['UserID']
+
         ];
     }
 

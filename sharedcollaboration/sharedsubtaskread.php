@@ -175,7 +175,7 @@ if (isset($_SESSION["userID"])) {
                 </button>
 
                 <div id="buzznotificationmodal"
-                    class="fixed bottom-0 right-6 bg-white text-black rounded-t-lg  shadow-lg hidden w-96 bg-transparent ">
+                    class="fixed bottom-0 right-6 bg-white text-black rounded-t-lg  shadow-lg w-96 bg-transparent ">
                     <!-- Modal content -->
                     <!-- Header -->
                     <div style="background-color: <?php echo $taskBackgroundColor; ?>; color: <?php echo $taskTextColor; ?>;   filter: brightness(135%);"
@@ -188,84 +188,19 @@ if (isset($_SESSION["userID"])) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                         </svg>
                     </div>
-                    <div id="buzzlist" style="max-height:600px;" class="text-black overflow-y-auto">
-                        <?php
-                        // Fetch and display subtasks with SubtaskStatus of 'Pending (Revise)'
-                        $pendingReviseSQL = "SELECT SubtaskID, SubtaskTitle, SubtaskDescription, SubtaskDuration, SubtaskDifficulty, SubtaskCreationDate, SubtaskBackgroundColor, SubtaskTextColor, SubtaskStatus, SubtaskMarkNumber, SubtaskImage, SubtaskStartTime, SubtaskEndTime, SubtaskPausedDuration FROM subtasks WHERE TaskID = '$taskID' AND SubtaskStatus = 'Pending (Revise)'";
-                        $pendingReviseResult = mysqli_query($link, $pendingReviseSQL);
-
-                        if (mysqli_num_rows($pendingReviseResult) > 0) {
-                            while ($row = mysqli_fetch_assoc($pendingReviseResult)) {
-                                // Replace line breaks in subtask description
-                                $subtaskDescription = str_replace("\r\n", '147linebreakbymatthew', $row['SubtaskDescription']);
-                                $subtaskDescription = str_replace(array("\r", "\n"), '147linebreakbymatthew', $subtaskDescription);
-
-                                echo "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>{$row['SubtaskTitle']}</span></p>";
-
-                                echo "<div class='flex justify-end'>";
-                                // Updated button with onclick attribute for "Pending (Revise)"
-                                echo "<button onclick=\"openVisualModal('{$row['SubtaskID']}', '" . addslashes($row['SubtaskTitle']) . "', '" . addslashes($subtaskDescription) . "', '{$row['SubtaskDuration']}', '{$row['SubtaskDifficulty']}', '{$row['SubtaskBackgroundColor']}', '{$row['SubtaskTextColor']}', '{$row['SubtaskStatus']}', '{$row['SubtaskMarkNumber']}', '{$row['SubtaskStartTime']}', '{$row['SubtaskEndTime']}', '{$row['SubtaskPausedDuration']}', '{$row['SubtaskCreationDate']}', '{$row['SubtaskImage']}')\"  
-                                class='px-4 py-2 mr-4 rounded-md bg-yellow-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Pending (Revise)</button>";
-                                echo "</div>";
-
-                                echo "<hr class='border-gray-400 mt-4 mx-0'>";
-                            }
-                        } else {
-                            echo "<p></p>";
-                        }
-                        ?>
+                    <div id="buzzlist" class="text-black">
+                        <!-- Content here will be dynamically filled by the updateBuzzList JavaScript function. -->
+                        <p class="ml-4">Loading tasks...</p>
                     </div>
 
-                    <div id="chatlist" class="text-black ">
-                        <?php
-                        // Fetch Subtask details from subtasks table based on SubtaskID from buzznotify table
-                        $buzzNotifySQL = "SELECT b.UserID, s.SubtaskID, s.SubtaskTitle, s.SubtaskDescription, s.SubtaskDuration, s.SubtaskDifficulty, s.SubtaskCreationDate, s.SubtaskBackgroundColor, s.SubtaskTextColor, s.SubtaskStatus, s.SubtaskMarkNumber, s.SubtaskImage, s.SubtaskStartTime, s.SubtaskEndTime, s.SubtaskPausedDuration, bc.BuzzMessage
-                            FROM buzznotify AS b 
-                            INNER JOIN subtasks AS s ON b.SubtaskID = s.SubtaskID 
-                            LEFT JOIN (
-                                SELECT bc.UserID, bc.SubtaskID, bc.BuzzMessage
-                                FROM buzzchats AS bc
-                                INNER JOIN (
-                                    SELECT UserID, SubtaskID, MAX(BuzzTimeStamp) AS LatestTimeStamp
-                                    FROM buzzchats
-                                    GROUP BY UserID, SubtaskID
-                                ) AS latest_msg ON bc.UserID = latest_msg.UserID AND bc.SubtaskID = latest_msg.SubtaskID AND bc.BuzzTimeStamp = latest_msg.LatestTimeStamp
-                            ) AS bc ON b.UserID = bc.UserID AND b.SubtaskID = bc.SubtaskID
-                            WHERE b.TaskID = '$taskID' 
-                            AND b.UserID != '" . $_SESSION['userID'] . "' 
-                            AND b.BuzzNotifiedStatus = 'false'";
 
+                    <div class="hidden" id="chatuserid"><?php echo isset($_SESSION['userID']) ? $_SESSION['userID'] : ''; ?></div>
 
+                        <div id="chatlist" class="text-black">
+                            <!-- Chat list will be dynamically updated here -->
+                            <hr class='border-gray-400 mt-4 mx-0'>
+                        </div>
 
-                        $buzzNotifyResult = mysqli_query($link, $buzzNotifySQL);
-
-                        // Check if there are any results
-                        if (mysqli_num_rows($buzzNotifyResult) > 0) {
-                            // Fetch and display Subtask details
-                            while ($row = mysqli_fetch_assoc($buzzNotifyResult)) {
-                                // Check if SubtaskPausedDuration is empty
-                                $pausedDuration = empty($row['SubtaskPausedDuration']) ? '00:00:00' : $row['SubtaskPausedDuration'];
-
-                                echo "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>{$row['SubtaskTitle']}</span></p>";
-                                echo "<p class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>{$row['BuzzMessage']}</span></p>";
-
-                                echo "<div class='flex justify-end'>";
-                                // Updated button with onclick attribute
-                                echo "<button onclick=\"updateBuzzNotify('{$row['SubtaskID']}', '{$taskID}', '{$row['UserID']}'); openVisualModal('{$row['SubtaskID']}', '" . addslashes($row['SubtaskTitle']) . "', '" . addslashes($row['SubtaskDescription']) . "',
-                                    '{$row['SubtaskDuration']}', '{$row['SubtaskDifficulty']}', '{$row['SubtaskBackgroundColor']}', '{$row['SubtaskTextColor']}', '{$row['SubtaskStatus']}',
-                                    '{$row['SubtaskMarkNumber']}', '{$row['SubtaskStartTime']}', '{$row['SubtaskEndTime']}', '{$pausedDuration}', '{$row['SubtaskCreationDate']}',
-                                    '{$row['SubtaskImage']}'); toggleChatModal(true);\"  
-                                    class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>
-                                    Buzz Raised </button>";
-
-                                echo "</div>";
-                            }
-                        } else {
-                            // If no Subtask found for the specified taskID
-                            echo "<p></p>";
-                        }
-                        ?>
-                        <hr class='border-gray-400 mt-4 mx-0'>
                     </div>
 
 
@@ -947,12 +882,106 @@ if (isset($_SESSION["userID"])) {
             <script>
 
 
-                function updateBuzzNotify(subtaskID, taskID, userID) {
+function fetchPendingReviseSubtasks() {
+    $.ajax({
+        url: 'sharedcollaboration/fetchbuzzrevise.php',
+        type: 'GET',
+        data: { taskID: '<?php echo $taskID; ?>' },
+        success: function(response) {
+            updateBuzzList(response);
+        }
+    });
+}
+
+function updateBuzzList(data) {
+    $('#buzzlist').empty(); // Clear existing content
+    var subtasks = JSON.parse(data);
+
+    if (subtasks.length > 0) {
+        subtasks.forEach(function(subtask) {
+            var html = "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + subtask.SubtaskTitle + "</span></p>" +
+                "<div class='flex justify-end'>" +
+                "<button onclick=\"openVisualModal('" + subtask.SubtaskID + "', '" + subtask.SubtaskTitle.replace(/'/g, "\\'") + "', '" + subtask.SubtaskDescription.replace(/'/g, "\\'") + "', '" + subtask.SubtaskDuration + "', '" + subtask.SubtaskDifficulty + "', '" + subtask.SubtaskBackgroundColor + "', '" + subtask.SubtaskTextColor + "', '" + subtask.SubtaskStatus + "', '" + subtask.SubtaskMarkNumber + "', '" + subtask.SubtaskStartTime + "', '" + subtask.SubtaskEndTime + "', '" + subtask.SubtaskPausedDuration + "', '" + subtask.SubtaskCreationDate + "', '" + subtask.SubtaskImage + "')\" class='px-4 py-2 mr-4 rounded-md bg-yellow-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Pending (Revise)</button>" +
+                "</div><hr class='border-gray-400 mt-4 mx-0'>";
+            $('#buzzlist').append(html);
+        });
+    } else {
+        $('#buzzlist').html('<p>No pending revisions.</p>');
+    }
+}
+
+
+
+
+
+    // Function to fetch buzz chats
+    function fetchBuzzChats() {
+        $.ajax({
+            url: 'subtask/fetchbuzzchats.php',
+            type: 'GET',
+            data: { taskID: '<?php echo $taskID; ?>' },
+            success: function(response) {
+                // Update chat list
+                updateChatList(response);
+            }
+        });
+    }
+
+// Function to update chat list with fetched data
+function updateChatList(data) {
+    $('#chatlist').empty(); // Clear previous data
+
+    // Parse the data string into an array of objects
+    try {
+        var dataArray = JSON.parse(data);
+
+        // Check if dataArray is an array
+        if (Array.isArray(dataArray)) {
+            dataArray.forEach(function(item) {
+                var pausedDuration = item.SubtaskPausedDuration ? item.SubtaskPausedDuration : '00:00:00';
+                var buttonHtml = "<button onclick=\"updateBuzzNotify('" + item.SubtaskID + "', '<?php echo $taskID; ?>', '" + item.UserID + "'); openVisualModal('" + item.SubtaskID + "', '" + item.SubtaskTitle + "', '" + item.SubtaskDescription + "', '" + item.SubtaskDuration + "', '" + item.SubtaskDifficulty + "', '" + item.SubtaskBackgroundColor + "', '" + item.SubtaskTextColor + "', '" + item.SubtaskStatus + "', '" + item.SubtaskMarkNumber + "', '" + item.SubtaskStartTime + "', '" + item.SubtaskEndTime + "', '" + pausedDuration + "', '" + item.SubtaskCreationDate + "', '" + item.SubtaskImage + "'); toggleChatModal(true);\" class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Buzz Raised </button>";
+                var chatHtml = "<div class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + item.SubtaskTitle + "</span></div>" +
+                    "<div class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>" + item.BuzzMessage + "</span></div>" +
+                    "<div class='flex justify-end'>" + buttonHtml + "</div>";
+
+                $('#chatlist').append(chatHtml);
+            });
+        } else {
+            console.error("Data array is not an array:", dataArray);
+        }
+    } catch (error) {
+        console.error("Error parsing JSON data:", error);
+    }
+}
+
+
+$(document).ready(function() {
+    // Trigger fetchBuzzChats() when the page is loaded
+    fetchBuzzChats();
+    
+    // Fetch buzz chats every 2 seconds
+    setInterval(fetchBuzzChats, 2000);
+
+
+    fetchPendingReviseSubtasks();
+    setInterval(fetchPendingReviseSubtasks, 2000); // Refresh every 2 seconds
+});
+
+
+
+
+
+function updateBuzzNotify(subtaskID, taskID, userID) {
                     // Create FormData object
                     var formData = new FormData();
                     formData.append('SubtaskID', subtaskID);
                     formData.append('TaskID', taskID);
                     formData.append('UserID', userID);
+
+
+                    console.log(subtaskID);
+                    console.log(taskID);
+                    console.log(userID);
 
                     // Send AJAX request
                     $.ajax({
@@ -964,6 +993,7 @@ if (isset($_SESSION["userID"])) {
                         success: function (response) {
                             // Handle success response if needed
                             console.log(response);
+
                         },
                         error: function (xhr, status, error) {
                             // Handle error response if needed
