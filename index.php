@@ -203,7 +203,7 @@
 
     <script>
 
-        function fetchCurrentUser() {
+function fetchCurrentUser() {
             $.get("log/fetchCurrentUsername.php", function (data) {
                 // Parse the JSON response
                 var userData = JSON.parse(data);
@@ -219,7 +219,7 @@
 
                 // Check if the profile image is set or not, use default if not
                 if (userData.profileImage && userData.profileImage.trim() !== "") {
-                    document.getElementById('profileImage').src = userData.profileImage;
+                    document.getElementById('profileImage').src = 'profilepics/' + userData.profileImage;
                 } else {
                     document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
                 }

@@ -207,28 +207,28 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
 
-            function fetchCurrentUser() {
-                $.get("log/fetchCurrentUsername.php", function (data) {
-                    // Parse the JSON response
-                    var userData = JSON.parse(data);
+        function fetchCurrentUser() {
+            $.get("log/fetchCurrentUsername.php", function (data) {
+                // Parse the JSON response
+                var userData = JSON.parse(data);
 
-                    // Check for errors
-                    if (userData.hasOwnProperty('error')) {
-                        console.error(userData.error);
-                        return; // Exit the function if there's an error
-                    }
+                // Check for errors
+                if (userData.hasOwnProperty('error')) {
+                    console.error(userData.error);
+                    return; // Exit the function if there's an error
+                }
 
-                    // Update the user's full name
-                    document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
+                // Update the user's full name
+                document.getElementById('UserFullName').textContent = userData.firstName + " " + userData.lastName;
 
-                    // Check if the profile image is set or not, use default if not
-                    if (userData.profileImage && userData.profileImage.trim() !== "") {
-                        document.getElementById('profileImage').src = userData.profileImage;
-                    } else {
-                        document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
-                    }
-                });
-            }
+                // Check if the profile image is set or not, use default if not
+                if (userData.profileImage && userData.profileImage.trim() !== "") {
+                    document.getElementById('profileImage').src = 'profilepics/' + userData.profileImage;
+                } else {
+                    document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
+                }
+            });
+        }
 
             // Call the function when the window loads
             window.onload = function () {

@@ -121,7 +121,7 @@
             <div id="timedata" class="flex flex-col">
                 <div id="timeRemaining" class="text-base font-semibold opacity-60">Time Remaining:</div>
 
-                
+
             </div>
             <div id="completionIndicator" class="text-2xl font-bold text-green-500 mr-2"></div>
 
@@ -270,7 +270,6 @@
 
 
 
-
         function fetchCurrentUser() {
             $.get("log/fetchCurrentUsername.php", function (data) {
                 // Parse the JSON response
@@ -287,7 +286,7 @@
 
                 // Check if the profile image is set or not, use default if not
                 if (userData.profileImage && userData.profileImage.trim() !== "") {
-                    document.getElementById('profileImage').src = userData.profileImage;
+                    document.getElementById('profileImage').src = 'profilepics/' + userData.profileImage;
                 } else {
                     document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
                 }
@@ -461,115 +460,115 @@
             return formattedDuration.trim();
         }
 
-// Function to format total completed time into days, hours, and minutes
-function formatCompletedTime(totalCompletedTime) {
-    if (totalCompletedTime === null) {
-        return "0";
-    }
+        // Function to format total completed time into days, hours, and minutes
+        function formatCompletedTime(totalCompletedTime) {
+            if (totalCompletedTime === null) {
+                return "0";
+            }
 
-    var parts = totalCompletedTime.split(':');
-    var days = Math.floor(parseInt(parts[0]) / 24);
-    var hours = parseInt(parts[0]) % 24;
-    var minutes = parseInt(parts[1]);
+            var parts = totalCompletedTime.split(':');
+            var days = Math.floor(parseInt(parts[0]) / 24);
+            var hours = parseInt(parts[0]) % 24;
+            var minutes = parseInt(parts[1]);
 
-    // Format the time in days, hours, and minutes
-    var formattedTime = "";
-    if (days > 0) {
-        formattedTime += days + " days ";
-    }
-    if (hours > 0) {
-        formattedTime += hours + " hours ";
-    }
-    if (minutes > 0) {
-        formattedTime += minutes + " mins";
-    }
+            // Format the time in days, hours, and minutes
+            var formattedTime = "";
+            if (days > 0) {
+                formattedTime += days + " days ";
+            }
+            if (hours > 0) {
+                formattedTime += hours + " hours ";
+            }
+            if (minutes > 0) {
+                formattedTime += minutes + " mins";
+            }
 
-    return formattedTime;
-}
+            return formattedTime;
+        }
 
 
         function callsubtasktime() {
-        // Retrieve task ID dynamically from URL parameters
-        var taskID = getQueryParam('taskid');
+            // Retrieve task ID dynamically from URL parameters
+            var taskID = getQueryParam('taskid');
 
-        // AJAX request to fetch task background color, text color, and due date
-        $.get("task/fetchTaskBackgroundColor.php?taskid=" + taskID, function (data) {
-            // Parse the JSON response
-            var taskData = JSON.parse(data);
+            // AJAX request to fetch task background color, text color, and due date
+            $.get("task/fetchTaskBackgroundColor.php?taskid=" + taskID, function (data) {
+                // Parse the JSON response
+                var taskData = JSON.parse(data);
 
-            // Check for errors
-            if (taskData.hasOwnProperty('error')) {
-                console.error(taskData.error);
-                return; // Exit the function if there's an error
-            }
-
-            // Retrieve the background color, text color, and due date from the task data
-            var taskBackgroundColor = taskData.TaskBackgroundColor;
-            var taskTextColor = taskData.TaskTextColor;
-            var taskDueDateTime = taskData.TaskDueDateTime;
-
-            var TotalAllottedTime = taskData.TotalAllottedTime;
-            var TotalCompletedTime = taskData.TotalCompletedTime;
-
-            console.log("Total Allotted Time:", TotalAllottedTime);
-            console.log("Total Completed Time:", TotalCompletedTime);
-
-            var formattedAllottedTime = formatDuration(TotalAllottedTime);
-            var formattedCompletedTime = formatCompletedTime(TotalCompletedTime);
-
-            console.log("Total Format Allotted Time:", formattedAllottedTime);
-            console.log("Total Completed Time:", formattedCompletedTime);
-
-            // Log the background color, text color, and due date to the console
-            console.log("Task Background Color:", taskBackgroundColor);
-            console.log("Task Text Color:", taskTextColor);
-            console.log("Task Due Date Time:", taskDueDateTime);
-
-            $('#timealloted').text("Total Allotted Time: " + formattedAllottedTime);
-            $('#timecompleted').text("Total Completed Time: " + formattedCompletedTime);
-
-            // Set the body background color and text color
-            document.body.style.backgroundColor = taskBackgroundColor;
-            document.body.style.color = taskTextColor;
-
-            // Function to update the countdown every minute
-            function updateCountdown() {
-                var now = new Date();
-                var dueDate = new Date(taskDueDateTime);
-                var timeDiff = dueDate - now;
-
-                if (timeDiff > 0) {
-                    // Calculate time difference in days, hours, minutes
-                    var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-
-                    var countdownText = "Time Remaining: " + days + " days, " + hours + " hours, " + minutes + " mins";
-                    $('#timeRemaining').text(countdownText);
-                } else {
-                    // If subtaskendtime exists, display "Time Completed Under"
-                    $.get("subtask/subtaskendtime.php?taskid=" + taskID, function (endTimeData) {
-                        if (endTimeData.trim() !== "") {
-                            $('#timeRemaining').text("Time Completed on " + endTimeData.trim());
-                        } else {
-                            // Calculate overdue time in days, hours, minutes
-                            var overdueTime = -timeDiff; // make time difference positive
-                            var days = Math.floor(overdueTime / (1000 * 60 * 60 * 24));
-                            var hours = Math.floor((overdueTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            var minutes = Math.floor((overdueTime % (1000 * 60 * 60)) / (1000 * 60));
-
-                            var overdueText = "Overdue Time: " + days + " days, " + hours + " hours, " + minutes + " mins";
-                            $('#timeRemaining').text(overdueText);
-                        }
-                    });
+                // Check for errors
+                if (taskData.hasOwnProperty('error')) {
+                    console.error(taskData.error);
+                    return; // Exit the function if there's an error
                 }
-            }
 
-            // Update the countdown immediately and then every minute
-            updateCountdown();
-            setInterval(updateCountdown, 60000); // Update every 60000 milliseconds (1 minute)
-        });
-    }
+                // Retrieve the background color, text color, and due date from the task data
+                var taskBackgroundColor = taskData.TaskBackgroundColor;
+                var taskTextColor = taskData.TaskTextColor;
+                var taskDueDateTime = taskData.TaskDueDateTime;
+
+                var TotalAllottedTime = taskData.TotalAllottedTime;
+                var TotalCompletedTime = taskData.TotalCompletedTime;
+
+                console.log("Total Allotted Time:", TotalAllottedTime);
+                console.log("Total Completed Time:", TotalCompletedTime);
+
+                var formattedAllottedTime = formatDuration(TotalAllottedTime);
+                var formattedCompletedTime = formatCompletedTime(TotalCompletedTime);
+
+                console.log("Total Format Allotted Time:", formattedAllottedTime);
+                console.log("Total Completed Time:", formattedCompletedTime);
+
+                // Log the background color, text color, and due date to the console
+                console.log("Task Background Color:", taskBackgroundColor);
+                console.log("Task Text Color:", taskTextColor);
+                console.log("Task Due Date Time:", taskDueDateTime);
+
+                $('#timealloted').text("Total Allotted Time: " + formattedAllottedTime);
+                $('#timecompleted').text("Total Completed Time: " + formattedCompletedTime);
+
+                // Set the body background color and text color
+                document.body.style.backgroundColor = taskBackgroundColor;
+                document.body.style.color = taskTextColor;
+
+                // Function to update the countdown every minute
+                function updateCountdown() {
+                    var now = new Date();
+                    var dueDate = new Date(taskDueDateTime);
+                    var timeDiff = dueDate - now;
+
+                    if (timeDiff > 0) {
+                        // Calculate time difference in days, hours, minutes
+                        var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+                        var countdownText = "Time Remaining: " + days + " days, " + hours + " hours, " + minutes + " mins";
+                        $('#timeRemaining').text(countdownText);
+                    } else {
+                        // If subtaskendtime exists, display "Time Completed Under"
+                        $.get("subtask/subtaskendtime.php?taskid=" + taskID, function (endTimeData) {
+                            if (endTimeData.trim() !== "") {
+                                $('#timeRemaining').text("Time Completed on " + endTimeData.trim());
+                            } else {
+                                // Calculate overdue time in days, hours, minutes
+                                var overdueTime = -timeDiff; // make time difference positive
+                                var days = Math.floor(overdueTime / (1000 * 60 * 60 * 24));
+                                var hours = Math.floor((overdueTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                var minutes = Math.floor((overdueTime % (1000 * 60 * 60)) / (1000 * 60));
+
+                                var overdueText = "Overdue Time: " + days + " days, " + hours + " hours, " + minutes + " mins";
+                                $('#timeRemaining').text(overdueText);
+                            }
+                        });
+                    }
+                }
+
+                // Update the countdown immediately and then every minute
+                updateCountdown();
+                setInterval(updateCountdown, 60000); // Update every 60000 milliseconds (1 minute)
+            });
+        }
 
 
 
@@ -597,16 +596,16 @@ function formatCompletedTime(totalCompletedTime) {
         }
 
     </script>
-<script>
-    function toggleMenu() {
-        var dropdown = document.getElementById("dropdown");
-        dropdown.classList.toggle("active");
-    }
+    <script>
+        function toggleMenu() {
+            var dropdown = document.getElementById("dropdown");
+            dropdown.classList.toggle("active");
+        }
 
-    function logout() {
-        window.location.href = "../login.html";
-    }
-</script>
+        function logout() {
+            window.location.href = "../login.html";
+        }
+    </script>
 
     <script>
         // Function to retrieve URL query parameters

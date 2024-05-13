@@ -145,7 +145,8 @@
 
 
 
-        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden text-white  overflow-y-auto" id="subtaskmodal">
+        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden text-white  overflow-y-auto"
+            id="subtaskmodal">
             <div
                 class="absolute top-1/2 left-1/2 w-11/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-8 rounded-lg max-h-screen overflow-y-auto">
                 <h2 class="text-2xl text-white  font-bold mb-4">Subtask Settings</h2>
@@ -241,8 +242,8 @@
                     <option value="easy">Easy to Hard</option>
                     <option value="hard">Hard to Easy</option>
                     <option value="markedfirst">Marked First</option>
-                    <option class="hidden"  value="statusasc">Pending to Done</option>
-                    <option class="hidden"  value="statusdesc">Done to Pending</option>
+                    <option class="hidden" value="statusasc">Pending to Done</option>
+                    <option class="hidden" value="statusdesc">Done to Pending</option>
 
                 </select>
 
@@ -271,7 +272,6 @@
 
 
 
-
         function fetchCurrentUser() {
             $.get("log/fetchCurrentUsername.php", function (data) {
                 // Parse the JSON response
@@ -288,7 +288,7 @@
 
                 // Check if the profile image is set or not, use default if not
                 if (userData.profileImage && userData.profileImage.trim() !== "") {
-                    document.getElementById('profileImage').src = userData.profileImage;
+                    document.getElementById('profileImage').src = 'profilepics/' + userData.profileImage;
                 } else {
                     document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
                 }

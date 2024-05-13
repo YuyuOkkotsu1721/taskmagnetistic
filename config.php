@@ -1,8 +1,8 @@
 <?php
-define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'taskmagnet');
+define('DB_SERVER', 'qf5dic2wzyjf1x5x.cbetxkdyhwsb.us-east-1.rds.amazonaws.com');
+define('DB_USERNAME', 'dbybgpvlrr7i6r9d');
+define('DB_PASSWORD', 'dayfqto1alj7iy5h');
+define('DB_NAME', 'ik0l60t2ju4idgvw');
 
 /* Attempt to connect to MySQL database */
 $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);

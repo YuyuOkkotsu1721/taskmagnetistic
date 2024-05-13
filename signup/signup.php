@@ -4,7 +4,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle image upload
-    $targetDir = "profilepics/";
+    $targetDir = "../profilepics/";
     $fileName = basename($_FILES["editImage"]["name"]);
     $targetFilePath = $targetDir . $fileName;
     $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['loggedin'] = true;
                 $_SESSION['username'] = $userUsername;
                 $_SESSION['userID'] = $userID;
-                header("Location: index.html");
+                header("Location: ../index.html");
                 exit();
             } else {
                 echo "ERROR: Could not execute $insertQuery. " . mysqli_error($link);
