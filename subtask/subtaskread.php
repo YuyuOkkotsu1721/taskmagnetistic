@@ -203,57 +203,11 @@ if (isset($_SESSION["userID"])) {
 
                         <div class="hidden" id="chatuserid"><?php echo isset($_SESSION['userID']) ? $_SESSION['userID'] : ''; ?></div>
 
-                        <div id="chatlist" class="text-black ">
-                            <?php
-                            // Fetch Subtask details from subtasks table based on SubtaskID from buzznotify table
-                            $buzzNotifySQL = "SELECT b.UserID, s.SubtaskID, s.SubtaskTitle, s.SubtaskDescription, s.SubtaskDuration, s.SubtaskDifficulty, s.SubtaskCreationDate, s.SubtaskBackgroundColor, s.SubtaskTextColor, s.SubtaskStatus, s.SubtaskMarkNumber, s.SubtaskImage, s.SubtaskStartTime, s.SubtaskEndTime, s.SubtaskPausedDuration, bc.BuzzMessage
-                            FROM buzznotify AS b 
-                            INNER JOIN subtasks AS s ON b.SubtaskID = s.SubtaskID 
-                            LEFT JOIN (
-                                SELECT bc.UserID, bc.SubtaskID, bc.BuzzMessage
-                                FROM buzzchats AS bc
-                                INNER JOIN (
-                                    SELECT UserID, SubtaskID, MAX(BuzzTimeStamp) AS LatestTimeStamp
-                                    FROM buzzchats
-                                    GROUP BY UserID, SubtaskID
-                                ) AS latest_msg ON bc.UserID = latest_msg.UserID AND bc.SubtaskID = latest_msg.SubtaskID AND bc.BuzzTimeStamp = latest_msg.LatestTimeStamp
-                            ) AS bc ON b.UserID = bc.UserID AND b.SubtaskID = bc.SubtaskID
-                            WHERE b.TaskID = '$taskID' 
-                            AND b.UserID != '" . $_SESSION['userID'] . "' 
-                            AND b.BuzzNotifiedStatus = 'false'";
-
-
-
-                            $buzzNotifyResult = mysqli_query($link, $buzzNotifySQL);
-
-                            // Check if there are any results
-                            if (mysqli_num_rows($buzzNotifyResult) > 0) {
-                                // Fetch and display Subtask details
-                                while ($row = mysqli_fetch_assoc($buzzNotifyResult)) {
-                                    // Check if SubtaskPausedDuration is empty
-                                    $pausedDuration = empty($row['SubtaskPausedDuration']) ? '00:00:00' : $row['SubtaskPausedDuration'];
-
-                                    echo "<p class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>{$row['SubtaskTitle']}</span></p>";
-                                    echo "<p class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>{$row['BuzzMessage']}</span></p>";
-
-                                    echo "<div class='flex justify-end'>";
-                                    // Updated button with onclick attribute
-                                    echo "<button onclick=\"updateBuzzNotify('{$row['SubtaskID']}', '{$taskID}', '{$row['UserID']}'); openVisualModal('{$row['SubtaskID']}', '" . addslashes($row['SubtaskTitle']) . "', '" . addslashes($row['SubtaskDescription']) . "',
-                                    '{$row['SubtaskDuration']}', '{$row['SubtaskDifficulty']}', '{$row['SubtaskBackgroundColor']}', '{$row['SubtaskTextColor']}', '{$row['SubtaskStatus']}',
-                                    '{$row['SubtaskMarkNumber']}', '{$row['SubtaskStartTime']}', '{$row['SubtaskEndTime']}', '{$pausedDuration}', '{$row['SubtaskCreationDate']}',
-                                    '{$row['SubtaskImage']}'); toggleChatModal(true);\"  
-                                    class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>
-                                    Buzz Raised </button>";
-
-                                    echo "</div>";
-                                }
-                            } else {
-                                // If no Subtask found for the specified taskID
-                                echo "<p></p>";
-                            }
-                            ?>
+                        <div id="chatlist" class="text-black">
+                            <!-- Chat list will be dynamically updated here -->
                             <hr class='border-gray-400 mt-4 mx-0'>
                         </div>
+
 
 
 
@@ -966,6 +920,40 @@ if (isset($_SESSION["userID"])) {
 
 
             <script>
+
+    // Function to fetch buzz chats
+    function fetchBuzzChats() {
+        $.ajax({
+            url: 'fetchbuzzchats.php',
+            type: 'GET',
+            data: { taskID: '<?php echo $taskID; ?>' },
+            success: function(response) {
+                // Update chat list
+                updateChatList(response);
+            }
+        });
+    }
+
+    // Function to update chat list with fetched data
+    function updateChatList(data) {
+        $('#chatlist').empty(); // Clear previous data
+        data.forEach(function(item) {
+            var pausedDuration = item.SubtaskPausedDuration ? item.SubtaskPausedDuration : '00:00:00';
+            var buttonHtml = "<button onclick=\"updateBuzzNotify('" + item.SubtaskID + "', '<?php echo $taskID; ?>', '" + item.UserID + "'); openVisualModal('" + item.SubtaskID + "', '" + item.SubtaskTitle + "', '" + item.SubtaskDescription + "', '" + item.SubtaskDuration + "', '" + item.SubtaskDifficulty + "', '" + item.SubtaskBackgroundColor + "', '" + item.SubtaskTextColor + "', '" + item.SubtaskStatus + "', '" + item.SubtaskMarkNumber + "', '" + item.SubtaskStartTime + "', '" + item.SubtaskEndTime + "', '" + pausedDuration + "', '" + item.SubtaskCreationDate + "', '" + item.SubtaskImage + "'); toggleChatModal(true);\" class='px-4 py-2 mr-4 rounded-md bg-red-600 hover:bg-opacity-75 transition-colors duration-300 text-white font-bold text-center max-w-xs'>Buzz Raised </button>";
+            var chatHtml = "<div class='px-3 mb-2 font-bold'>Subtask Title: <span class='font-medium'>" + item.SubtaskTitle + "</span></div>" +
+                "<div class='px-3 mb-2 font-bold'>Latest Message: <span class='font-medium'>" + item.BuzzMessage + "</span></div>" +
+                "<div class='flex justify-end'>" + buttonHtml + "</div>";
+
+            $('#chatlist').append(chatHtml);
+        });
+    }
+
+    // Fetch buzz chats every 2 seconds
+    setInterval(fetchBuzzChats, 2000);
+
+
+
+
 
                 function openAlertModal(message) {
                     document.getElementById("alertText").textContent = message;
