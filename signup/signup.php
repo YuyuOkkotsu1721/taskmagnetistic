@@ -33,7 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../index.html");
                 exit();
             } else {
-                echo "ERROR: Could not execute $insertQuery. " . mysqli_error($link);
+                // If insertion fails, echo the error message
+                echo mysqli_error($link);
             }
         } else {
             echo "Error uploading file.";

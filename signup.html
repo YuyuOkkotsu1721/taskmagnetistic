@@ -125,6 +125,10 @@
 
         </div>
     </div>
+
+    <p id="errorcheck" class="text-red-500"></p>
+
+
     <!-- Back button -->
     <button onclick="goBack()"
         class="fixed bottom-8 left-8 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
@@ -357,34 +361,35 @@
         });
 
         function saveUserData() {
-            const formData = new FormData();
-            const file = document.getElementById('editImage').files[0];
-            if (!file) {
-                alert('Please choose an image for your profile.');
-                return;
-            }
-            formData.append('editImage', file);
-            formData.append('UserFirstName', document.getElementById('firstname').value);
-            formData.append('UserLastName', document.getElementById('lastname').value);
-            formData.append('UserPhoneNumber', document.getElementById('phonenumber').value);
-            formData.append('UserEmail', document.getElementById('email').value);
-            formData.append('UserUsername', document.getElementById('username').value);
-            formData.append('Userpassword', document.getElementById('newpassword').value);
-
-            $.ajax({
-                url: 'signup/signup.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    window.location.href = 'index.html';
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.statusText);
-                }
-            });
+        const formData = new FormData();
+        const file = document.getElementById('editImage').files[0];
+        if (!file) {
+            alert('Please choose an image for your profile.');
+            return;
         }
+        formData.append('editImage', file);
+        formData.append('UserFirstName', document.getElementById('firstname').value);
+        formData.append('UserLastName', document.getElementById('lastname').value);
+        formData.append('UserPhoneNumber', document.getElementById('phonenumber').value);
+        formData.append('UserEmail', document.getElementById('email').value);
+        formData.append('UserUsername', document.getElementById('username').value);
+        formData.append('Userpassword', document.getElementById('newpassword').value);
+
+        $.ajax({
+            url: 'signup/signup.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                window.location.href = 'index.html';
+            },
+            error: function (xhr, status, error) {
+                // Display the error message in the errorcheck paragraph
+                document.getElementById('errorcheck').textContent = xhr.responseText;
+            }
+        });
+    }
 
         document.getElementById('saveButton').addEventListener('click', function () {
             saveUserData();
