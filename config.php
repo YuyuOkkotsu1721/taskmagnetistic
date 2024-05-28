@@ -1,8 +1,8 @@
 <?php
-define('DB_SERVER', 'qf5dic2wzyjf1x5x.cbetxkdyhwsb.us-east-1.rds.amazonaws.com');
-define('DB_USERNAME', 'dbybgpvlrr7i6r9d');
-define('DB_PASSWORD', 'dayfqto1alj7iy5h');
-define('DB_NAME', 'ik0l60t2ju4idgvw');
+define('DB_SERVER', 'y5s2h87f6ur56vae.cbetxkdyhwsb.us-east-1.rds.amazonaws.com');
+define('DB_USERNAME', 'gkbyqw54eu40m34j');
+define('DB_PASSWORD', 'rkcnzklzzniuu23m');
+define('DB_NAME', 'wfsbuhww1badwteb');
 /* Attempt to connect to MySQL database */
 $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
