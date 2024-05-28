@@ -288,7 +288,7 @@
 
                 // Check if the profile image is set or not, use default if not
                 if (userData.profileImage && userData.profileImage.trim() !== "") {
-                    document.getElementById('profileImage').src = 'profilepics/' + userData.profileImage;
+                    document.getElementById('profileImage').src =  userData.profileImage;
                 } else {
                     document.getElementById('profileImage').src = 'profilepics/defaultphotobytaskmagnet.jpg'; // Path to default image
                 }
