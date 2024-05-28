@@ -510,7 +510,7 @@ document.getElementById('currentpassword').addEventListener('input', function ()
 
 
                         // Populate profile picture with retrieved image path or default
-                        var profileImagePath = 'profilepics/' + data.userProfileImage || 'profilepics/defaultphotobytaskmagnet.jpg';
+                        var profileImagePath =  data.userProfileImage || 'profilepics/defaultphotobytaskmagnet.jpg';
                         document.getElementById('profileImage').src = profileImagePath;
 
                         // Open image modal on profile picture click
